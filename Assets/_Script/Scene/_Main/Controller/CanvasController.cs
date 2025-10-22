@@ -6,14 +6,21 @@ public class CanvasController : MonoBehaviour
 
     [SerializeField] private GameObject LandingPage;
     [SerializeField] private GameObject MainDashboard;
+
+    public MainController mainController { get; private set; }
+
+    void Start()
+    {
+        LandingPage.SetActive(true);
+        MainDashboard.SetActive(false);
+    }
+
     public void HomeScene()
     {
-        MainDashboard.SetActive(true);
-
         LeanTween.alphaCanvas(LandingPage.GetComponent<CanvasGroup>(), 1f, 0.5f).setOnComplete(() =>
                 {
-                    LandingPage.SetActive(true);
-                    MainDashboard.SetActive(false);
+                    LandingPage.SetActive(false);
+                    MainDashboard.SetActive(true);
                 });
     }
 }

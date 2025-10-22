@@ -13,9 +13,9 @@ public class LandingPage : MonoBehaviour
     [SerializeField] private Animator digitAnimator;
 
     [SerializeField] private CampusEventPanel getCampusEventPanel;
-    [SerializeField] private GameObject waveEffect;
-    [SerializeField] private GameObject dotLineEffect;
-    [SerializeField] private GameObject numberEffect;
+    [SerializeField] private CampusEventPanel getCampusEventPanel2;
+
+    [SerializeField] private HomePage homePage;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -25,10 +25,6 @@ public class LandingPage : MonoBehaviour
             fadeCanvasGroup.interactable = false;
             fadeCanvasGroup.blocksRaycasts = false;
         });
-
-        waveEffect.SetActive(false);
-        dotLineEffect.SetActive(false);
-        numberEffect.SetActive(false);
     }
 
     public void StartHome()
@@ -54,9 +50,6 @@ public class LandingPage : MonoBehaviour
         {
             //different panel refresh
             getCampusEventPanel.RefreshEvents();
-            waveEffect.SetActive(true);
-            dotLineEffect.SetActive(true);
-            numberEffect.SetActive(true);
         });
 
 
@@ -76,5 +69,6 @@ public class LandingPage : MonoBehaviour
         videoPlayer.Stop();
 
         canvasController.HomeScene();
+        getCampusEventPanel2.RefreshEvents();
     }
 }

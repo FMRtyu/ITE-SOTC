@@ -11,28 +11,9 @@ public class HomePage : _MenuState
         state = PageNavType.home;
     }
 
-    void Start()
+    void SpawnCampusEvent()
     {
-        foreach (GameObject child in transform)
-        {
-            child.SetActive(false);
-        }
-    }
-
-    public void activatedPreHome()
-    {
-        foreach (GameObject element in preHomeUIElements)
-        {
-            element.SetActive(true);
-        }
         campusEventPanel.RefreshEvents();
     }
 
-    public void ActivateMainHome()
-    {
-        foreach (GameObject child in transform)
-        {
-            child.SetActive(true);
-        }
-    }
 }
