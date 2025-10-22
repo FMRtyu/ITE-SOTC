@@ -9,11 +9,10 @@ public class LandingPage : MonoBehaviour
     
     [SerializeField] private VideoPlayer videoPlayer;
     [SerializeField] private GameObject landingPageTexts;
-    [SerializeField] private CanvasController canvasController;
+    [SerializeField] private MainController mainController;
     [SerializeField] private Animator digitAnimator;
 
     [SerializeField] private CampusEventPanel getCampusEventPanel;
-    [SerializeField] private CampusEventPanel getCampusEventPanel2;
 
     [SerializeField] private HomePage homePage;
     
@@ -67,8 +66,5 @@ public class LandingPage : MonoBehaviour
 
         //showHome + static image
         videoPlayer.Stop();
-
-        canvasController.HomeScene();
-        getCampusEventPanel2.RefreshEvents();
     }
 }

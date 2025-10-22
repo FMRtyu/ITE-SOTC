@@ -2,12 +2,16 @@ using UnityEngine;
 
 public class MainController : MonoBehaviour
 {
+    [SerializeField] private CanvasGroup landingScene;
+    [SerializeField] private MainDashboard dashboardScene;
+
     [SerializeField]
     private string jsonUrl = "file:///D:/Assets/CampusDataEvent.json";  // local path
     public EventData[] campusEvent;
 
     void Start()
     {
+        dashboardScene.initDashboard();
         initData();
     }
 

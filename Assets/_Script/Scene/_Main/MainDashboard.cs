@@ -3,8 +3,9 @@ using UnityEngine;
 
 public class MainDashboard : MonoBehaviour
 {
-
-    
+    private GameObject[] preHomeUIElements;
+    [SerializeField]private GameObject[] dashboardUIElements;
+    [SerializeField] private GameObject[] staticDashboardUI;
     //Drags = the different menus we have
     public _MenuState[] allMenus;
 
@@ -21,13 +22,27 @@ public class MainDashboard : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        SetActiveState(PageNavType.home);
+        
     }
 
     // Update is called once per frame
     void Update()
     {
 
+    }
+
+    public void initDashboard()
+    {
+        foreach (GameObject child in dashboardUIElements)
+        {
+            child.SetActive(false);
+        }
+
+        CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
+
+        canvasGroup.alpha = 0f;
+        canvasGroup.interactable = false;
+        canvasGroup.blocksRaycasts = false;
     }
     
         //Jump back one step = what happens when we press escape or one of the back buttons
