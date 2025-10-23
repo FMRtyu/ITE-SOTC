@@ -717,7 +717,7 @@ RectTransform:
   - {fileID: 1934133348}
   - {fileID: 1882694317}
   - {fileID: 1384703294}
-  m_Father: {fileID: 632197511}
+  m_Father: {fileID: 685596011}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1375,6 +1375,7 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1069664399}
   - {fileID: 1219787459}
   - {fileID: 632197511}
   - {fileID: 50894353}
@@ -2155,7 +2156,7 @@ RectTransform:
   - {fileID: 2098036531}
   - {fileID: 1234718074}
   - {fileID: 1484752952}
-  m_Father: {fileID: 632197511}
+  m_Father: {fileID: 685596011}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2762,7 +2763,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2032538439}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: FullScreenVideo, Assembly-CSharp
         m_MethodName: PlayVideoFeed
         m_Mode: 3
@@ -3812,7 +3813,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1428721719}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PageNav, Assembly-CSharp
         m_MethodName: OpenPage
         m_Mode: 3
@@ -3824,7 +3825,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1428721719}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PageNav, Assembly-CSharp
         m_MethodName: activatedButton
         m_Mode: 2
@@ -3961,7 +3962,6 @@ GameObject:
   - component: {fileID: 340798947}
   - component: {fileID: 340798946}
   - component: {fileID: 340798948}
-  - component: {fileID: 340798949}
   m_Layer: 5
   m_Name: ButtonStart
   m_TagString: Untagged
@@ -4039,20 +4039,6 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!114 &340798949
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 340798944}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a51542ac35b479c449d01e5ffb879c62, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  canvasGroup: {fileID: 340798948}
-  fadeDuration: 1
 --- !u!1 &342071743
 GameObject:
   m_ObjectHideFlags: 0
@@ -4474,7 +4460,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 396969394}
-  - component: {fileID: 396969396}
   - component: {fileID: 396969395}
   m_Layer: 5
   m_Name: Campus Event Today
@@ -4501,7 +4486,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 748.65796, y: -296.418}
+  m_AnchoredPosition: {x: 749.1, y: -297.6}
   m_SizeDelta: {x: 342.6248, y: 267.3426}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &396969395
@@ -4516,21 +4501,6 @@ CanvasGroup:
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
---- !u!114 &396969396
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 396969393}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c09bb3f97e68ca14aabd05918756d18d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mainController: {fileID: 1039599014}
-  eventPanelPrefab: {fileID: 9206675860263871669, guid: 27e84dbc105590043bcad4d9b8db020c, type: 3}
-  eventPanelParent: {fileID: 515564607}
 --- !u!1 &398262986
 GameObject:
   m_ObjectHideFlags: 0
@@ -4616,7 +4586,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1428721719}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PageNav, Assembly-CSharp
         m_MethodName: OpenPage
         m_Mode: 3
@@ -4628,7 +4598,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1428721719}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PageNav, Assembly-CSharp
         m_MethodName: activatedButton
         m_Mode: 2
@@ -5310,7 +5280,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 498193987}
-  - component: {fileID: 498193988}
   m_Layer: 5
   m_Name: Home
   m_TagString: Untagged
@@ -5344,22 +5313,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &498193988
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 498193986}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c51b284c7d95a4e4492f7a1f6631c1c9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  preHomeUIElements:
-  - {fileID: 1357477013}
-  - {fileID: 166060677}
-  campusEventPanel: {fileID: 1019831729}
 --- !u!1 &510779625
 GameObject:
   m_ObjectHideFlags: 0
@@ -5395,7 +5348,7 @@ RectTransform:
   - {fileID: 1509372865}
   - {fileID: 1152176371}
   - {fileID: 1023599126}
-  m_Father: {fileID: 632197511}
+  m_Father: {fileID: 685596011}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -6256,142 +6209,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!1 &621491514
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 621491515}
-  - component: {fileID: 621491517}
-  - component: {fileID: 621491516}
-  m_Layer: 5
-  m_Name: Text (TMP)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &621491515
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 621491514}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1407128984}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &621491516
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 621491514}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_text: Button
-  m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_fontSharedMaterials: []
-  m_fontMaterial: {fileID: 0}
-  m_fontMaterials: []
-  m_fontColor32:
-    serializedVersion: 2
-    rgba: 4281479730
-  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-  m_enableVertexGradient: 0
-  m_colorMode: 3
-  m_fontColorGradient:
-    topLeft: {r: 1, g: 1, b: 1, a: 1}
-    topRight: {r: 1, g: 1, b: 1, a: 1}
-    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    bottomRight: {r: 1, g: 1, b: 1, a: 1}
-  m_fontColorGradientPreset: {fileID: 0}
-  m_spriteAsset: {fileID: 0}
-  m_tintAllSprites: 0
-  m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: -1183493901
-  m_overrideHtmlColors: 0
-  m_faceColor:
-    serializedVersion: 2
-    rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
-  m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
-  m_fontStyle: 0
-  m_HorizontalAlignment: 2
-  m_VerticalAlignment: 512
-  m_textAlignment: 65535
-  m_characterSpacing: 0
-  m_wordSpacing: 0
-  m_lineSpacing: 0
-  m_lineSpacingMax: 0
-  m_paragraphSpacing: 0
-  m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 1
-  m_wordWrappingRatios: 0.4
-  m_overflowMode: 0
-  m_linkedTextComponent: {fileID: 0}
-  parentLinkedComponent: {fileID: 0}
-  m_enableKerning: 0
-  m_ActiveFontFeatures: 6e72656b
-  m_enableExtraPadding: 0
-  checkPaddingRequired: 0
-  m_isRichText: 1
-  m_EmojiFallbackSupport: 1
-  m_parseCtrlCharacters: 1
-  m_isOrthographic: 1
-  m_isCullingEnabled: 0
-  m_horizontalMapping: 0
-  m_verticalMapping: 0
-  m_uvLineOffset: 0
-  m_geometrySortingOrder: 0
-  m_IsTextObjectScaleStatic: 0
-  m_VertexBufferAutoSizeReduction: 0
-  m_useMaxVisibleDescender: 1
-  m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
-  m_isUsingLegacyAnimationComponent: 0
-  m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
-  m_baseMaterial: {fileID: 0}
-  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!222 &621491517
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 621491514}
-  m_CullTransparentMesh: 1
 --- !u!1 &623927049
 GameObject:
   m_ObjectHideFlags: 0
@@ -6554,7 +6371,7 @@ GameObject:
   - component: {fileID: 632197512}
   - component: {fileID: 632197513}
   m_Layer: 5
-  m_Name: MainDashboard
+  m_Name: Dashboard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6572,19 +6389,15 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1367677337}
-  - {fileID: 193758628}
-  - {fileID: 35106996}
-  - {fileID: 510779626}
-  - {fileID: 1428721717}
+  - {fileID: 685596011}
   - {fileID: 1429062327}
   - {fileID: 498193987}
   - {fileID: 1930291669}
-  - {fileID: 1242949526}
   - {fileID: 1129787427}
   - {fileID: 2064365071}
   - {fileID: 1970149992}
   - {fileID: 1357231648}
+  - {fileID: 1242949526}
   m_Father: {fileID: 120120732}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -6592,7 +6405,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!225 &632197512
+--- !u!114 &632197512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 632197510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34d89bca53799534089794f7792454a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!225 &632197513
 CanvasGroup:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -6604,34 +6429,6 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!114 &632197513
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 632197510}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec410be56452f3542804e91918592380, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dashboardUIElements:
-  - {fileID: 1367677336}
-  - {fileID: 193758627}
-  - {fileID: 35106995}
-  - {fileID: 510779625}
-  - {fileID: 1428721716}
-  - {fileID: 498193986}
-  - {fileID: 1930291668}
-  - {fileID: 1129787426}
-  - {fileID: 2064365070}
-  - {fileID: 1970149991}
-  - {fileID: 1357231647}
-  staticDashboardUI: []
-  allMenus:
-  - {fileID: 498193988}
-  - {fileID: 1930291670}
 --- !u!1 &666964433
 GameObject:
   m_ObjectHideFlags: 0
@@ -6805,6 +6602,46 @@ RectTransform:
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 752.1645, y: 109.940735}
   m_SizeDelta: {x: 352.9189, y: 515.5986}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &685596010
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 685596011}
+  m_Layer: 5
+  m_Name: HUD
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &685596011
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 685596010}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1367677337}
+  - {fileID: 193758628}
+  - {fileID: 35106996}
+  - {fileID: 510779626}
+  - {fileID: 1428721717}
+  m_Father: {fileID: 632197511}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &689982914
 GameObject:
@@ -7524,7 +7361,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1428721719}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PageNav, Assembly-CSharp
         m_MethodName: OpenPage
         m_Mode: 3
@@ -7536,7 +7373,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1428721719}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PageNav, Assembly-CSharp
         m_MethodName: activatedButton
         m_Mode: 2
@@ -7668,7 +7505,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2032538439}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: FullScreenVideo, Assembly-CSharp
         m_MethodName: PlayVideoFeed
         m_Mode: 3
@@ -9012,7 +8849,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2032538439}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: FullScreenVideo, Assembly-CSharp
         m_MethodName: CloseVideoFeed
         m_Mode: 1
@@ -9184,7 +9021,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1428721719}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PageNav, Assembly-CSharp
         m_MethodName: OpenPage
         m_Mode: 3
@@ -9196,7 +9033,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1428721719}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PageNav, Assembly-CSharp
         m_MethodName: activatedButton
         m_Mode: 2
@@ -9851,7 +9688,7 @@ GameObject:
   m_Component:
   - component: {fileID: 971015280}
   m_Layer: 5
-  m_Name: LandingGroup
+  m_Name: headerTextGroup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10217,8 +10054,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c09bb3f97e68ca14aabd05918756d18d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainController: {fileID: 1039599014}
+  mainController: {fileID: 0}
   eventPanelPrefab: {fileID: 9206675860263871669, guid: 27e84dbc105590043bcad4d9b8db020c, type: 3}
+  eventPanels: []
   eventPanelParent: {fileID: 1657164315}
 --- !u!1 &1023599125
 GameObject:
@@ -10418,13 +10256,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1039599012}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d344739d463ee814f9c46f5eb7ea7281, type: 3}
+  m_Script: {fileID: 11500000, guid: eafbd843c7c062845ac0036caa4cd0f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  landingScene: {fileID: 1219787460}
-  dashboardScene: {fileID: 632197513}
-  jsonUrl: file:///D:/Assets/CampusDataEvent.json
-  campusEvent: []
+  uIManager: {fileID: 1069664400}
 --- !u!1 &1043614936
 GameObject:
   m_ObjectHideFlags: 0
@@ -10711,6 +10546,59 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1065252957}
   m_CullTransparentMesh: 1
+--- !u!1 &1069664398
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1069664399}
+  - component: {fileID: 1069664400}
+  m_Layer: 5
+  m_Name: UIManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1069664399
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1069664398}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 120120732}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1069664400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1069664398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67fca815439c6a04286773b06968775d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameManager: {fileID: 0}
+  landingPage: {fileID: 1219787460}
+  dashboardPage: {fileID: 632197512}
+  HUD: {fileID: 0}
+  fadeCanvasGroup: {fileID: 1892464514}
 --- !u!1 &1085802385
 GameObject:
   m_ObjectHideFlags: 0
@@ -11005,7 +10893,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2032538439}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: FullScreenVideo, Assembly-CSharp
         m_MethodName: PlayVideoFeed
         m_Mode: 3
@@ -11258,10 +11146,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 632197511}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1136351110
 GameObject:
@@ -12644,7 +12532,7 @@ GameObject:
   - component: {fileID: 1219787460}
   - component: {fileID: 1219787461}
   m_Layer: 5
-  m_Name: LandingPage
+  m_Name: Landing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12673,7 +12561,26 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!225 &1219787460
+--- !u!114 &1219787460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1219787458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c065d3abf2c96af4da6fa5a9180e9ece, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiManager: {fileID: 1069664400}
+  headerTexts: {fileID: 971015279}
+  landingVideoBackground: {fileID: 2038094524}
+  clickToStartText: {fileID: 340798948}
+  landingVideoClip: {fileID: 32900000, guid: c5371880a44866d4ba20bed4501c6a86, type: 3}
+  transitionVideoClip: {fileID: 32900000, guid: 2ff7cd3fa9a8b9a42b62dc463ba4d496, type: 3}
+  homeTransitionVideoClip: {fileID: 32900000, guid: f7bce41b1cd12c74cb39ebba78ad603d, type: 3}
+--- !u!225 &1219787461
 CanvasGroup:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -12685,27 +12592,6 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!114 &1219787461
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1219787458}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ebf8f12c12a2fe34395a05f2c28c57a6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fadeCanvasGroup: {fileID: 1892464514}
-  transitionVideoClip: {fileID: 32900000, guid: 2ff7cd3fa9a8b9a42b62dc463ba4d496, type: 3}
-  homeTransitionVideoClip: {fileID: 32900000, guid: f7bce41b1cd12c74cb39ebba78ad603d, type: 3}
-  videoPlayer: {fileID: 2038094524}
-  landingPageTexts: {fileID: 971015279}
-  mainController: {fileID: 1039599014}
-  digitAnimator: {fileID: 1357477015}
-  getCampusEventPanel: {fileID: 396969396}
-  homePage: {fileID: 498193988}
 --- !u!1 &1222333397
 GameObject:
   m_ObjectHideFlags: 0
@@ -14893,10 +14779,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 632197511}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1357477013
 GameObject:
@@ -15219,7 +15105,7 @@ GameObject:
   - component: {fileID: 1367677339}
   - component: {fileID: 1367677338}
   m_Layer: 5
-  m_Name: BG
+  m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15237,7 +15123,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 632197511}
+  m_Father: {fileID: 685596011}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -15521,7 +15407,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1428721719}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PageNav, Assembly-CSharp
         m_MethodName: OpenPage
         m_Mode: 3
@@ -15533,7 +15419,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1428721719}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PageNav, Assembly-CSharp
         m_MethodName: activatedButton
         m_Mode: 2
@@ -15700,8 +15586,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 621491515}
+  m_Children: []
   m_Father: {fileID: 971015280}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -15753,21 +15638,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 340798949}
-        m_TargetAssemblyTypeName: SimpleButtonFade, Assembly-CSharp
-        m_MethodName: StopFade
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1219787461}
-        m_TargetAssemblyTypeName: LandingPage, Assembly-CSharp
-        m_MethodName: StartHome
+      - m_Target: {fileID: 1219787460}
+        m_TargetAssemblyTypeName: LandingController, Assembly-CSharp
+        m_MethodName: OnClickToStart
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -15901,7 +15774,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1428721717}
   - component: {fileID: 1428721718}
-  - component: {fileID: 1428721719}
   m_Layer: 5
   m_Name: NavButton
   m_TagString: Untagged
@@ -15927,7 +15799,7 @@ RectTransform:
   - {fileID: 315272176}
   - {fileID: 920532111}
   - {fileID: 1860712698}
-  m_Father: {fileID: 632197511}
+  m_Father: {fileID: 685596011}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
@@ -15960,28 +15832,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &1428721719
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1428721716}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 35b922ad578accb4cba4f67a1c7d7d9e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Pages:
-  - {fileID: 1129787426}
-  - {fileID: 2064365070}
-  - {fileID: 498193986}
-  - {fileID: 1970149991}
-  - {fileID: 1357231647}
-  - {fileID: 1930291668}
-  navButtons:
-  - {fileID: 1397061660}
-  - {fileID: 1860712699}
 --- !u!1 &1429062326
 GameObject:
   m_ObjectHideFlags: 0
@@ -16578,7 +16428,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1852401687}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: FullScreenVideo, Assembly-CSharp
         m_MethodName: PlayVideoFeed
         m_Mode: 3
@@ -16602,6 +16452,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29b25e9b764686245a9b93f6f69610cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  videoPlayer: {fileID: 0}
+  isPlaying: 1
 --- !u!1 &1509372864
 GameObject:
   m_ObjectHideFlags: 0
@@ -16859,6 +16711,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29b25e9b764686245a9b93f6f69610cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  videoPlayer: {fileID: 0}
+  isPlaying: 1
 --- !u!114 &1535992169
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16903,7 +16757,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1852401687}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: FullScreenVideo, Assembly-CSharp
         m_MethodName: PlayVideoFeed
         m_Mode: 3
@@ -17980,7 +17834,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1852401687}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: FullScreenVideo, Assembly-CSharp
         m_MethodName: CloseVideoFeed
         m_Mode: 1
@@ -21196,7 +21050,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1852401686}
   - component: {fileID: 1852401691}
-  - component: {fileID: 1852401687}
   - component: {fileID: 1852401690}
   - component: {fileID: 1852401689}
   - component: {fileID: 1852401688}
@@ -21227,21 +21080,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1852401687
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1852401685}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45a5150a126bd1e469fcb90919310d06, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  videoClips:
-  - {fileID: 32900000, guid: e1a40dff1802e2a49a0e0a4fe6f7a8b3, type: 3}
-  - {fileID: 32900000, guid: 68bd2da43273c6843b9ae07b38204f07, type: 3}
 --- !u!95 &1852401688
 Animator:
   serializedVersion: 7
@@ -21421,7 +21259,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1428721719}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PageNav, Assembly-CSharp
         m_MethodName: OpenPage
         m_Mode: 3
@@ -21433,7 +21271,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1428721719}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PageNav, Assembly-CSharp
         m_MethodName: activatedButton
         m_Mode: 2
@@ -21565,7 +21403,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2032538439}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: FullScreenVideo, Assembly-CSharp
         m_MethodName: PlayVideoFeed
         m_Mode: 3
@@ -22062,7 +21900,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1930291669}
-  - component: {fileID: 1930291670}
   m_Layer: 5
   m_Name: VirtualPatrol
   m_TagString: Untagged
@@ -22096,18 +21933,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1930291670
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1930291668}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0542d8ae32cc9664ebb12e47c353c3f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1934133347
 GameObject:
   m_ObjectHideFlags: 0
@@ -22734,10 +22559,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 632197511}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2032538433
 GameObject:
@@ -22749,7 +22574,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2032538434}
   - component: {fileID: 2032538436}
-  - component: {fileID: 2032538439}
   - component: {fileID: 2032538437}
   - component: {fileID: 2032538438}
   - component: {fileID: 2032538440}
@@ -22852,23 +22676,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &2032538439
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2032538433}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45a5150a126bd1e469fcb90919310d06, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  videoClips:
-  - {fileID: 32900000, guid: e1a40dff1802e2a49a0e0a4fe6f7a8b3, type: 3}
-  - {fileID: 32900000, guid: 68bd2da43273c6843b9ae07b38204f07, type: 3}
-  - {fileID: 32900000, guid: cec40a611708a754982c15d67d26f778, type: 3}
-  - {fileID: 32900000, guid: f1a4dc2699053224b922f67811a19664, type: 3}
 --- !u!95 &2032538440
 Animator:
   serializedVersion: 7
@@ -22904,7 +22711,7 @@ GameObject:
   - component: {fileID: 2038094525}
   - component: {fileID: 2038094524}
   m_Layer: 5
-  m_Name: LandingVideo
+  m_Name: LandingBackgroundVideo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -23216,10 +23023,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 632197511}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2078736436
 GameObject:
