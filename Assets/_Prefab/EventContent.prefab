@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7189063177104108721}
   - component: {fileID: 5149418348975006992}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Venue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -473,7 +473,7 @@ GameObject:
   - component: {fileID: 8049711952800499208}
   - component: {fileID: 2832427723495178950}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Crowd
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -609,7 +609,7 @@ GameObject:
   - component: {fileID: 5950324461314354569}
   - component: {fileID: 8793352961060125900}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Time
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -745,7 +745,7 @@ GameObject:
   - component: {fileID: 4953044133920227728}
   - component: {fileID: 3542539574493739055}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: EventName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -997,7 +997,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 9206675860263871669}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d8c05da48e70a54ebf8597e0e4fca59, type: 3}
+  m_Script: {fileID: 11500000, guid: a699678f8d9adde4d8c4513180d5cc42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   eventName: {fileID: 3542539574493739055}
@@ -1005,7 +1005,6 @@ MonoBehaviour:
   eventTime: {fileID: 8793352961060125900}
   eventCrowd: {fileID: 2832427723495178950}
   eventStatus: {fileID: 405648587713683683}
-  eventStatusBG: {fileID: 3997295136115533908}
   statusBGSprites:
   - {fileID: 4724619845842819615}
   - {fileID: 8964449703664779529}

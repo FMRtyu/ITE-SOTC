@@ -1,5 +1,5 @@
 [System.Serializable]
-public class EventData
+public class CampusEventData
 {
     public string @event; // the '@' allows using the keyword "event"
     public string venue;

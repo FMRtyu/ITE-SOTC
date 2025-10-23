@@ -11,7 +11,7 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
             // Kalau belum ada instance, cari di scene
             if (_instance == null)
             {
-                _instance = FindObjectOfType<T>();
+                _instance = FindFirstObjectByType<T>();
 
                 // Kalau masih tidak ada, buat baru
                 if (_instance == null)

@@ -56,6 +56,8 @@ public class LandingController : MonoBehaviour
         vp.loopPointReached -= OnTransitionVideoEnd;
         landingVideoBackground.clip = homeTransitionVideoClip;
 
+        uiManager.ShowDashboardCampusEvent();
+
         landingVideoBackground.Play();
         landingVideoBackground.loopPointReached += OnHomeTransitionVideoEnd;
 

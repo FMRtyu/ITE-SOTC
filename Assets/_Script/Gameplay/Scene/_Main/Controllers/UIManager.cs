@@ -2,8 +2,6 @@ using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
-    [Header("Game Controllers")]
-    [SerializeField] private GameManager gameManager;
     
     [Header("Pages")]
     [SerializeField] private LandingController landingPage;
@@ -12,7 +10,7 @@ public class UIManager : MonoBehaviour
     private CanvasGroup dashboardCanvasGroup;
 
     [Header("HUD Elements")]
-    [SerializeField] private GameObject HUD;
+    [SerializeField] private CanvasGroup HUD;
     [SerializeField] private CanvasGroup fadeCanvasGroup;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -23,27 +21,32 @@ public class UIManager : MonoBehaviour
 
     private void initUIElement()
     {
+        HUD.alpha = 0f;
+        HUD.interactable = false;
+        HUD.blocksRaycasts = false;
+
         landingCanvasGroup = landingPage.GetComponent<CanvasGroup>();
         dashboardCanvasGroup = dashboardPage.GetComponent<CanvasGroup>();
 
-        dashboardCanvasGroup.alpha = 0f;
         dashboardCanvasGroup.interactable = false;
         dashboardCanvasGroup.blocksRaycasts = false;
 
         PopOutFade();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void ShowDashboardCampusEvent()
     {
-
+        dashboardPage.showCampusEventPanelOnly();
     }
 
     public void ShowDashboard()
     {
-        dashboardCanvasGroup.alpha = 1f;
         dashboardCanvasGroup.interactable = true;
         dashboardCanvasGroup.blocksRaycasts = true;
+        dashboardPage.ShowAllHomeChildren();
+        HUD.alpha = 1f;
+        HUD.interactable = true;
+        HUD.blocksRaycasts = true;
 
         LeanTween.alphaCanvas(landingCanvasGroup, 0f, 0.5f).setOnComplete(() =>
         {
