@@ -11120,7 +11120,7 @@ MonoBehaviour:
   GPSTrackingButton: {fileID: 315272177}
   alarmMonitoringButton: {fileID: 920532112}
   virtualPatrolButton: {fileID: 1860712699}
-  skipLanding: 0
+  skipLanding: 1
 --- !u!1 &1073836662
 GameObject:
   m_ObjectHideFlags: 0

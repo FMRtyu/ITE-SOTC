@@ -34,16 +34,13 @@ public class VirtualPatrol : _MenuState
         initVirtualPatrol();
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
         if (isPlayingCameraOne)
-        {
-            ToggleFenceCameraViewOne();
-        }
+            StopCamera(fullShrinkButtonOne, "one");
+
         if (isPlayingCameraTwo)
-        {
-            ToggleFenceCameraViewTwo();
-        }
+            StopCamera(fullShrinkButtonTwo, "two");
     }
 
     void initVirtualPatrol()
@@ -113,31 +110,14 @@ public class VirtualPatrol : _MenuState
     {
         if (!isPlayingCameraOne)
         {
-            //full view
-            fullShrinkButtonOne.image.sprite = shrinkTexture;
-            fullBackgroundVideoPlayer.texture = fenceCameraOneTexture;
-
-            LeanTween.alphaCanvas(fullBackgroundVideoCanvasGroup, 1f, 0.5f).setEase(LeanTweenType.easeInOutSine).setOnComplete(() =>
-            {
-                fullBackgroundVideoCanvasGroup.interactable = true;
-                fullBackgroundVideoCanvasGroup.blocksRaycasts = true;
-            });
-
-            isPlayingCameraOne = true;
+            if (isPlayingCameraTwo)
+                SwitchCamera(fullShrinkButtonTwo, fenceCameraOneTexture, fullShrinkButtonOne, "one");
+            else
+                PlayCamera(fullShrinkButtonOne, fenceCameraOneTexture, "one");
         }
         else
         {
-            //shrink view
-            LeanTween.alphaCanvas(fullBackgroundVideoCanvasGroup, 0f, 0.5f).setEase(LeanTweenType.easeInOutSine).setOnComplete(() =>
-            {
-                fullShrinkButtonOne.image.sprite = fullTexture;
-                fullBackgroundVideoPlayer.texture = null;
-
-                fullBackgroundVideoCanvasGroup.interactable = false;
-                fullBackgroundVideoCanvasGroup.blocksRaycasts = false;
-
-                isPlayingCameraOne = false;
-            });
+            StopCamera(fullShrinkButtonOne, "one");
         }
     }
 
@@ -145,32 +125,81 @@ public class VirtualPatrol : _MenuState
     {
         if (!isPlayingCameraTwo)
         {
-            //full view
-            fullShrinkButtonTwo.image.sprite = shrinkTexture;
-            fullBackgroundVideoPlayer.texture = fenceCameraTwoTexture;
+            if (isPlayingCameraOne)
+                SwitchCamera(fullShrinkButtonOne, fenceCameraTwoTexture, fullShrinkButtonTwo, "two");
+            else
+                PlayCamera(fullShrinkButtonTwo, fenceCameraTwoTexture, "two");
+        }
+        else
+        {
+            StopCamera(fullShrinkButtonTwo, "two");
+        }
+    }
 
-            LeanTween.alphaCanvas(fullBackgroundVideoCanvasGroup, 1f, 0.5f).setEase(LeanTweenType.easeInOutSine).setOnComplete(() =>
+    // === Smooth transition between two cameras ===
+    private void SwitchCamera(Button fromButton, RenderTexture toTexture, Button toButton, string toCam)
+    {
+        LeanTween.alphaCanvas(fullBackgroundVideoCanvasGroup, 0f, 0.3f)
+            .setEase(LeanTweenType.easeInOutSine)
+            .setOnComplete(() =>
+            {
+                fromButton.image.sprite = fullTexture;
+                fullBackgroundVideoPlayer.texture = toTexture;
+                toButton.image.sprite = shrinkTexture;
+
+                LeanTween.alphaCanvas(fullBackgroundVideoCanvasGroup, 1f, 0.3f)
+                    .setEase(LeanTweenType.easeInOutSine)
+                    .setOnComplete(() =>
+                    {
+                        fullBackgroundVideoCanvasGroup.interactable = true;
+                        fullBackgroundVideoCanvasGroup.blocksRaycasts = true;
+                    });
+
+                // update flags
+                if (toCam == "one")
+                {
+                    isPlayingCameraOne = true;
+                    isPlayingCameraTwo = false;
+                }
+                else
+                {
+                    isPlayingCameraTwo = true;
+                    isPlayingCameraOne = false;
+                }
+            });
+    }
+
+    private void PlayCamera(Button targetButton, RenderTexture texture, string cam)
+    {
+        targetButton.image.sprite = shrinkTexture;
+        fullBackgroundVideoPlayer.texture = texture;
+
+        LeanTween.alphaCanvas(fullBackgroundVideoCanvasGroup, 1f, 0.5f)
+            .setEase(LeanTweenType.easeInOutSine)
+            .setOnComplete(() =>
             {
                 fullBackgroundVideoCanvasGroup.interactable = true;
                 fullBackgroundVideoCanvasGroup.blocksRaycasts = true;
             });
 
-            isPlayingCameraTwo = true;
-        }
-        else
-        {
-            //shrink view
-            LeanTween.alphaCanvas(fullBackgroundVideoCanvasGroup, 0f, 0.5f).setEase(LeanTweenType.easeInOutSine).setOnComplete(() =>
-            {
-                fullShrinkButtonTwo.image.sprite = fullTexture;
+        if (cam == "one") isPlayingCameraOne = true;
+        else isPlayingCameraTwo = true;
+    }
 
+    private void StopCamera(Button targetButton, string cam)
+    {
+        LeanTween.alphaCanvas(fullBackgroundVideoCanvasGroup, 0f, 0.5f)
+            .setEase(LeanTweenType.easeInOutSine)
+            .setOnComplete(() =>
+            {
+                targetButton.image.sprite = fullTexture;
                 fullBackgroundVideoPlayer.texture = null;
 
                 fullBackgroundVideoCanvasGroup.interactable = false;
                 fullBackgroundVideoCanvasGroup.blocksRaycasts = false;
 
-                isPlayingCameraTwo = false;
+                if (cam == "one") isPlayingCameraOne = false;
+                else isPlayingCameraTwo = false;
             });
-        }
     }
 }
