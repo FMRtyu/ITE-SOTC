@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class GameManager : Singleton<GameManager>
+public class GameManager : MonoBehaviourSingletonPersistent<GameManager>
 {
     public static GameManager Instance { get; private set; }
     public GameState CurrentState;

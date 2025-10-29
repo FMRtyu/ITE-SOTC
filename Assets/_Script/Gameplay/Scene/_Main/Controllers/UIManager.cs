@@ -63,12 +63,16 @@ public class UIManager : MonoBehaviour
             dashboardPage.SetActiveState(MenuState.Home);
             HomeButton.interactable = false;
             virtualPatrolButton.interactable = true;
+
+            SoundManager.Instance.PlaySFX("button_click");
         });
         virtualPatrolButton.onClick.AddListener(() =>
         {
             dashboardPage.SetActiveState(MenuState.VirtualPatrol);
             virtualPatrolButton.interactable = false;
             HomeButton.interactable = true;
+
+            SoundManager.Instance.PlaySFX("button_click");
         });
     }
 

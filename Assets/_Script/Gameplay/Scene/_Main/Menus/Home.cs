@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Home : _MenuState
 {
@@ -20,6 +21,8 @@ public class Home : _MenuState
     void Start()
     {
         HideAllChildren();
+
+        initHome();
     }
 
     private void HideAllChildren()
@@ -27,6 +30,19 @@ public class Home : _MenuState
         foreach (Transform child in transform)
         {
             child.gameObject.SetActive(false);
+        }
+    }
+
+    private void initHome()
+    {
+        Button[] buttons = GetComponentsInChildren<Button>();
+
+        foreach (Button button in buttons)
+        {
+            button.onClick.AddListener(() =>
+            {
+                SoundManager.Instance.PlaySFX("button_click");
+            });
         }
     }
     

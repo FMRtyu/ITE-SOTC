@@ -1,3 +1,5 @@
+using UnityEngine;
+
 [System.Serializable]
 public class CampusEventData
 {
@@ -6,4 +8,15 @@ public class CampusEventData
     public string time;
     public string crowd_size;
     public string current_status;
+}
+
+[System.Serializable]
+public class AudioClipData
+{
+    public string clipName;
+    public AudioClip audioClip;
+    [Range(0f, 1f)]
+    public float clipVolume;
+
+    public bool loop;
 }
