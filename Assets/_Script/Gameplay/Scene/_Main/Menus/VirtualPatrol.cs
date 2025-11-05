@@ -1,3 +1,4 @@
+using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
@@ -9,7 +10,7 @@ public class VirtualPatrol : _MenuState
     [SerializeField] private RawImage fullBackgroundVideoPlayer;
 
     [SerializeField] private VideoPlayer fenceIntrusionVideoPlayerOne;
-    [SerializeField] private VideoPlayer fenceIntrusionVideoRawImageTwo;
+    [SerializeField] private VideoPlayer fenceIntrusionVideoPlayerTwo;
 
     [SerializeField] private CanvasGroup blackBGOverlay;
 
@@ -20,6 +21,9 @@ public class VirtualPatrol : _MenuState
     [SerializeField] private VideoClip[] fullscreenVideoClip;
     [SerializeField] private RenderTexture fenceCameraOneTexture;
     [SerializeField] private RenderTexture fenceCameraTwoTexture;
+
+    [Header("UI Element")]
+    [SerializeField] private CanvasGroup pinPoint;
 
     //video player settings
     private CanvasGroup fullscreenVideoCanvasGroup;
@@ -43,6 +47,12 @@ public class VirtualPatrol : _MenuState
         LeanTween.cancel(blackBGOverlayId);
 
         blackBGOverlay.alpha = 0f;
+
+        LeanTween.alphaCanvas(pinPoint, 0f, 1f).setDelay(blackBGOverlayeDelay).setOnComplete(() =>
+            {
+                pinPoint.interactable = false;
+                pinPoint.blocksRaycasts = false;
+            });
         blackBGOverlayId = LeanTween.alphaCanvas(blackBGOverlay, 1f, blackBGOverlayeDuration)
             .setEase(LeanTweenType.easeInOutSine)
             .setDelay(blackBGOverlayeDelay)
@@ -126,6 +136,11 @@ public class VirtualPatrol : _MenuState
 
         fullscreenVideoPlayer.clip = fullscreenVideoClip[index];
         fullscreenVideoPlayer.Play();
+
+        VideoToggle(fenceIntrusionVideoPlayerOne, false);
+        VideoToggle(fenceIntrusionVideoPlayerTwo, false);
+
+        ShowPinPoint(false);
         LeanTween.alphaCanvas(fullscreenVideoCanvasGroup, 1f, 0.5f).setEase(LeanTweenType.easeInOutSine).setOnComplete(() =>
         {
             fullscreenVideoCanvasGroup.interactable = true;
@@ -140,6 +155,21 @@ public class VirtualPatrol : _MenuState
             fullscreenVideoPlayer.Stop();
             fullscreenVideoCanvasGroup.interactable = false;
             fullscreenVideoCanvasGroup.blocksRaycasts = false;
+
+
+
+            if (isPlayingCameraOne)
+            {
+                VideoToggle(fenceIntrusionVideoPlayerOne, true);
+            }
+            else if (isPlayingCameraTwo)
+            {
+                VideoToggle(fenceIntrusionVideoPlayerTwo, true);
+            }
+            else
+            {
+                ShowPinPoint(true);
+            }
         });
     }
 
@@ -197,7 +227,7 @@ public class VirtualPatrol : _MenuState
                     isPlayingCameraTwo = false;
 
                     VideoToggle(fenceIntrusionVideoPlayerOne, true);
-                    VideoToggle(fenceIntrusionVideoRawImageTwo, false);
+                    VideoToggle(fenceIntrusionVideoPlayerTwo, false);
 
                 }
                 else
@@ -206,7 +236,7 @@ public class VirtualPatrol : _MenuState
                     isPlayingCameraOne = false;
 
                     VideoToggle(fenceIntrusionVideoPlayerOne, false);
-                    VideoToggle(fenceIntrusionVideoRawImageTwo, true);
+                    VideoToggle(fenceIntrusionVideoPlayerTwo, true);
 
                 }
             });
@@ -215,6 +245,8 @@ public class VirtualPatrol : _MenuState
     private void PlayCamera(RenderTexture texture, string cam)
     {
         fullBackgroundVideoPlayer.texture = texture;
+
+        ShowPinPoint(false);
 
         if (blackBGOverlay.alpha < 1f)
             blackBGOverlayId = LeanTween.alphaCanvas(blackBGOverlay, 1f, blackBGOverlayeDuration)
@@ -236,7 +268,7 @@ public class VirtualPatrol : _MenuState
         }
         else
         {
-            VideoToggle(fenceIntrusionVideoRawImageTwo, true);
+            VideoToggle(fenceIntrusionVideoPlayerTwo, true);
         }
     }
 
@@ -246,6 +278,8 @@ public class VirtualPatrol : _MenuState
             .setEase(LeanTweenType.easeInOutSine)
             .setOnComplete(() =>
             {
+
+                ShowPinPoint(true);
                 fullBackgroundVideoPlayer.texture = null;
 
                 fullBackgroundVideoCanvasGroup.interactable = false;
@@ -260,11 +294,30 @@ public class VirtualPatrol : _MenuState
                 }
                 else
                 {
-                    VideoToggle(fenceIntrusionVideoRawImageTwo, false);
+                    VideoToggle(fenceIntrusionVideoPlayerTwo, false);
                 }
             });
         SoundManager.Instance.StopLoopedSFX();
         blackBGOverlayId = LeanTween.alphaCanvas(blackBGOverlay, 0f, blackBGOverlayeDuration)
             .setEase(LeanTweenType.easeInOutSine).id;
+    }
+
+    void ShowPinPoint(bool show)
+    {
+        if (show)
+        {
+            pinPoint.interactable = true;
+            pinPoint.blocksRaycasts = true;
+            LeanTween.alphaCanvas(pinPoint, 1f, 1f);
+        }
+        else
+        {
+            LeanTween.alphaCanvas(pinPoint, 0f, 1f).setOnComplete(() =>
+            {
+                pinPoint.interactable = false;
+                pinPoint.blocksRaycasts = false;
+            });
+        }
+            
     }
 }

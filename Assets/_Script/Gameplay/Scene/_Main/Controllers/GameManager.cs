@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -11,7 +11,10 @@ public class GameManager : MonoBehaviourSingletonPersistent<GameManager>
 
     [Header("Campus Event Data")]
     public CampusEventData[] CampusEvents;
-    [SerializeField] private string campusEventJsonURL;
+
+    //load or create new json
+    public CampusEventData[] eventsData;
+    private string campusEventJsonURL;
 
     private void Awake()
     {
@@ -22,6 +25,9 @@ public class GameManager : MonoBehaviourSingletonPersistent<GameManager>
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+
+        campusEventJsonURL = Path.Combine(Application.persistentDataPath, "crowd_data.json");
+        LoadOrCreateJson();
     }
 
     private async void Start()
@@ -55,5 +61,43 @@ public class GameManager : MonoBehaviourSingletonPersistent<GameManager>
         {
             Debug.Log($"[DataManager] Loaded {CampusEvents.Length} campus events.");
         }
+    }
+
+    private void LoadOrCreateJson()
+    {
+        if (!File.Exists(campusEventJsonURL))
+        {
+            Debug.Log("JSON not found, creating new one...");
+            CreateDefaultJson();
+        }
+
+        string json = File.ReadAllText(campusEventJsonURL);
+        eventsData = JsonHelper.FromJson<CampusEventData>(json);
+
+        Debug.Log("Loaded " + eventsData.Length + " campus events");
+    }
+
+    private void CreateDefaultJson()
+    {
+        string defaultJson = @"
+        [
+          {
+            ""event"": ""CCA Fair 2025"",
+            ""venue"": ""FOYER"",
+            ""time"": ""12PM - 2PM"",
+            ""crowd_size"": ""100 PAX"",
+            ""current_status"": ""LOW""
+          },
+          {
+            ""event"": ""Open House 2025"",
+            ""venue"": ""Auditorium"",
+            ""time"": ""10AM - 1PM"",
+            ""crowd_size"": ""200 PAX"",
+            ""current_status"": ""MEDIUM""
+          }
+        ]";
+
+        File.WriteAllText(campusEventJsonURL, defaultJson);
+        Debug.Log("Default JSON created at: " + campusEventJsonURL);
     }
 }
