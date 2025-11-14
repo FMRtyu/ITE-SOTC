@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,12 +15,14 @@ public class UIManager : MonoBehaviour
     [SerializeField] private CanvasGroup HUD;
     [SerializeField] private CanvasGroup fadeCanvasGroup;
     [Header("Navigation elements")]
-    [SerializeField] private Button smartbuildButton;
-    [SerializeField] private Button sustainabilityButton;
-    [SerializeField] private Button HomeButton;
-    [SerializeField] private Button GPSTrackingButton;
-    [SerializeField] private Button alarmMonitoringButton;
-    [SerializeField] private Button virtualPatrolButton;
+    [SerializeField] private GameObject smartbuildButton;
+    [SerializeField] private GameObject sustainabilityButton;
+    [SerializeField] private GameObject HomeButton;
+    [SerializeField] private GameObject GPSTrackingButton;
+    [SerializeField] private GameObject alarmMonitoringButton;
+    [SerializeField] private GameObject virtualPatrolButton;
+
+    private List<GameObject> navGroup = new List<GameObject>();
 
     [Header("debug")]
     [SerializeField] private bool skipLanding = false;
@@ -28,7 +31,15 @@ public class UIManager : MonoBehaviour
     void Start()
     {
         initUIElement();
-        InitButton();
+
+        navGroup.Add(smartbuildButton);
+        navGroup.Add(sustainabilityButton);
+        navGroup.Add(HomeButton);
+        navGroup.Add(GPSTrackingButton);
+        navGroup.Add(alarmMonitoringButton);
+        navGroup.Add(virtualPatrolButton);
+
+        activeBTN(HomeButton);
     }
 
     private void initUIElement()
@@ -55,25 +66,61 @@ public class UIManager : MonoBehaviour
 
     }
 
-    void InitButton()
+    public void OpenMenu(int index)
     {
-        HomeButton.interactable = false;
-        HomeButton.onClick.AddListener(() =>
+        MenuState selectedMenu = MenuState.Home;
+        GameObject selectedNavButton = null;
+        switch (index)
         {
-            dashboardPage.SetActiveState(MenuState.Home);
-            HomeButton.interactable = false;
-            virtualPatrolButton.interactable = true;
+            case 0:
+                selectedMenu = MenuState.SmartBuilding;
+                selectedNavButton = smartbuildButton;
+                break;
+            case 1:
+                selectedMenu = MenuState.SustainabilityMetrics;
+                selectedNavButton = sustainabilityButton;
+                break;
+            case 2:
+                selectedMenu = MenuState.Home;
+                selectedNavButton = HomeButton;
+                break;
+            case 3:
+                selectedMenu = MenuState.GPSTracking;
+                selectedNavButton = GPSTrackingButton;
+                break;
+            case 4:
+                selectedMenu = MenuState.AlarmMonitoring;
+                selectedNavButton = alarmMonitoringButton;
+                break;
+            case 5:
+                selectedMenu = MenuState.VirtualPatrol;
+                selectedNavButton = virtualPatrolButton;
+                break;
+        }
 
-            SoundManager.Instance.PlaySFX("button_click");
-        });
-        virtualPatrolButton.onClick.AddListener(() =>
+        if (selectedMenu != dashboardPage.currentMenuState)
         {
-            dashboardPage.SetActiveState(MenuState.VirtualPatrol);
-            virtualPatrolButton.interactable = false;
-            HomeButton.interactable = true;
-
+            dashboardPage.SetActiveState(selectedMenu);
+            activeBTN(selectedNavButton);
             SoundManager.Instance.PlaySFX("button_click");
-        });
+        }
+
+    }
+
+    public void activeBTN(GameObject btn)
+    {
+        foreach (GameObject item in navGroup)
+        {
+            deactiveBTN(item);
+        } 
+        btn.transform.GetChild(0).gameObject.SetActive(true);
+        btn.transform.GetChild(1).gameObject.SetActive(false);
+    }
+
+    public void deactiveBTN(GameObject btn)
+    {
+        btn.transform.GetChild(0).gameObject.SetActive(false);
+        btn.transform.GetChild(1).gameObject.SetActive(true);
     }
 
     public void ShowDashboardCampusEvent()
@@ -94,9 +141,13 @@ public class UIManager : MonoBehaviour
         {
             landingCanvasGroup.interactable = false;
             landingCanvasGroup.blocksRaycasts = false;
+
+            SoundManager.Instance.SetVolume(0.2f, "theEpic", 1f);
         });
 
     }
+
+
     #region Fade Controls
     public void PopInFade()
     {

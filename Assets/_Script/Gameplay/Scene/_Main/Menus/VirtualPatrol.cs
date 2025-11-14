@@ -6,11 +6,9 @@ using UnityEngine.Video;
 public class VirtualPatrol : _MenuState
 {
     [Header("Video elements")]
-    [SerializeField] private VideoPlayer fullscreenVideoPlayer;
-    [SerializeField] private RawImage fullBackgroundVideoPlayer;
-
-    [SerializeField] private VideoPlayer fenceIntrusionVideoPlayerOne;
-    [SerializeField] private VideoPlayer fenceIntrusionVideoPlayerTwo;
+    [SerializeField] private VideoPlayer fenceBTNOne;
+    [SerializeField] private VideoPlayer fenceBTNTwo;
+    [SerializeField] private VideoPlayer PopupVideoPlayer;
 
     [SerializeField] private CanvasGroup blackBGOverlay;
 
@@ -18,22 +16,25 @@ public class VirtualPatrol : _MenuState
     [SerializeField] private float blackBGOverlayeDelay = 0.5f;
 
     [Header("video clips")]
-    [SerializeField] private VideoClip[] fullscreenVideoClip;
+    [SerializeField] private VideoClip[] popupVideoClip;
     [SerializeField] private RenderTexture fenceCameraOneTexture;
     [SerializeField] private RenderTexture fenceCameraTwoTexture;
 
     [Header("UI Element")]
     [SerializeField] private CanvasGroup pinPoint;
+    [SerializeField] private CanvasGroup virtualBackgroundGroup;
 
     //video player settings
-    private CanvasGroup fullscreenVideoCanvasGroup;
-    private CanvasGroup fullBackgroundVideoCanvasGroup;
+    private CanvasGroup fencePopupVideoCanvasGroup;
 
     //variables
-    private bool isPlayingCameraOne = false;
-    private bool isPlayingCameraTwo = false;
+    bool isPlayingPopup;
 
+    int currentIndex = -1;
     int blackBGOverlayId = -1;
+
+    int virtualBackgroundTweenId = -1;
+    int pinPointTweenId = -1;
 
 
     void Awake()
@@ -43,58 +44,56 @@ public class VirtualPatrol : _MenuState
 
     void OnEnable()
     {
-        // Cancel any leftover tween before starting a new one
-        LeanTween.cancel(blackBGOverlayId);
+        // Cancel tweens safely
+        LeanTween.cancel(virtualBackgroundTweenId);
+        LeanTween.cancel(pinPointTweenId);
 
         blackBGOverlay.alpha = 0f;
 
-        LeanTween.alphaCanvas(pinPoint, 0f, 1f).setDelay(blackBGOverlayeDelay).setOnComplete(() =>
-            {
-                pinPoint.interactable = false;
-                pinPoint.blocksRaycasts = false;
-            });
-        blackBGOverlayId = LeanTween.alphaCanvas(blackBGOverlay, 1f, blackBGOverlayeDuration)
-            .setEase(LeanTweenType.easeInOutSine)
-            .setDelay(blackBGOverlayeDelay)
-            .setOnComplete(() =>
-            {
-                ToggleFenceCameraViewOne();
-                SoundManager.Instance.PlaySFX("alarm");
-            })
-            .id;
+        // Store tween ID for virtualBackgroundGroup
+        virtualBackgroundTweenId = LeanTween.alphaCanvas(virtualBackgroundGroup, 1f, 0.5f).setDelay(blackBGOverlayeDelay).setOnComplete(() =>
+        {
+            // Store tween ID for pinPoint
+            pinPointTweenId = LeanTween.alphaCanvas(pinPoint, 1f, 0.5f).id;
+        }).id;
+
+        VideoToggle(fenceBTNOne, true);
+        VideoToggle(fenceBTNTwo, true);
     }
 
     void OnDisable()
     {
-        // Cancel the current fade tween if active
-        LeanTween.cancel(blackBGOverlayId);
-        blackBGOverlayId = -1;
+        StopCamera();
+        // Cancel tweens safely
+        LeanTween.cancel(virtualBackgroundTweenId);
+        LeanTween.cancel(pinPointTweenId);
 
-        // Stop camera feeds safely
-        if (isPlayingCameraOne)
-            StopCamera("one");
+        virtualBackgroundTweenId = -1;
+        pinPointTweenId = -1;
 
-        if (isPlayingCameraTwo)
-            StopCamera("two");
+        VideoToggle(fenceBTNOne, false);
+        VideoToggle(fenceBTNTwo, false);
 
         // Immediately hide the overlay so it doesn't remain visible
         blackBGOverlay.alpha = 0f;
 
-        SoundManager.Instance.StopLoopedSFX();
+        fenceBTNOne.SetDirectAudioMute(0, true);
+        fenceBTNTwo.SetDirectAudioMute(0, true);
+
+        // Fade out tweens with IDs again
+        pinPointTweenId = LeanTween.alphaCanvas(pinPoint, 0f, 0.5f).setOnComplete(() =>
+        {
+            virtualBackgroundTweenId = LeanTween.alphaCanvas(virtualBackgroundGroup, 0f, 0.5f).id;
+        }).id;
     }
 
     void initVirtualPatrol()
     {
-        fullscreenVideoCanvasGroup = fullscreenVideoPlayer.GetComponent<CanvasGroup>();
-        fullBackgroundVideoCanvasGroup = fullBackgroundVideoPlayer.GetComponent<CanvasGroup>();
+        fencePopupVideoCanvasGroup = PopupVideoPlayer.GetComponent<CanvasGroup>();
 
-        fullscreenVideoCanvasGroup.alpha = 0f;
-        fullscreenVideoCanvasGroup.interactable = false;
-        fullscreenVideoCanvasGroup.blocksRaycasts = false;
-
-        fullBackgroundVideoCanvasGroup.alpha = 0f;
-        fullBackgroundVideoCanvasGroup.interactable = false;
-        fullBackgroundVideoCanvasGroup.blocksRaycasts = false;
+        fencePopupVideoCanvasGroup.alpha = 0f;
+        fencePopupVideoCanvasGroup.interactable = false;
+        fencePopupVideoCanvasGroup.blocksRaycasts = false;
 
         Button[] buttons = GetComponentsInChildren<Button>();
 
@@ -105,6 +104,18 @@ public class VirtualPatrol : _MenuState
                 SoundManager.Instance.PlaySFX("button_click");
             });
         }
+
+    }
+
+    public void PlayPopupVideo(int index)
+    {
+        if (index != currentIndex)
+            if (!isPlayingPopup)
+                PlayPopupCamera(index);
+            else
+                SwitchCamera(index);
+        else
+            StopCamera();
 
     }
     public override void InitState(DashboardController dashboardController)
@@ -126,178 +137,70 @@ public class VirtualPatrol : _MenuState
         }
     }
 
-    public void PlayFullscreenVideo(int index)
-    {
-        if (index < 0 || index >= fullscreenVideoClip.Length)
-        {
-            Debug.LogWarning($"Index {index} is out of bounds for fullscreen video clips.");
-            return;
-        }
 
-        fullscreenVideoPlayer.clip = fullscreenVideoClip[index];
-        fullscreenVideoPlayer.Play();
-
-        VideoToggle(fenceIntrusionVideoPlayerOne, false);
-        VideoToggle(fenceIntrusionVideoPlayerTwo, false);
-
-        ShowPinPoint(false);
-        LeanTween.alphaCanvas(fullscreenVideoCanvasGroup, 1f, 0.5f).setEase(LeanTweenType.easeInOutSine).setOnComplete(() =>
-        {
-            fullscreenVideoCanvasGroup.interactable = true;
-            fullscreenVideoCanvasGroup.blocksRaycasts = true;
-        });
-    }
-
-    public void StopFullscreenVideo()
-    {
-        LeanTween.alphaCanvas(fullscreenVideoCanvasGroup, 0f, 0.5f).setEase(LeanTweenType.easeInOutSine).setOnComplete(() =>
-        {
-            fullscreenVideoPlayer.Stop();
-            fullscreenVideoCanvasGroup.interactable = false;
-            fullscreenVideoCanvasGroup.blocksRaycasts = false;
-
-
-
-            if (isPlayingCameraOne)
-            {
-                VideoToggle(fenceIntrusionVideoPlayerOne, true);
-            }
-            else if (isPlayingCameraTwo)
-            {
-                VideoToggle(fenceIntrusionVideoPlayerTwo, true);
-            }
-            else
-            {
-                ShowPinPoint(true);
-            }
-        });
-    }
-
-    public void ToggleFenceCameraViewOne()
-    {
-        if (!isPlayingCameraOne)
-        {
-            if (isPlayingCameraTwo)
-                SwitchCamera(fenceCameraOneTexture, "one");
-            else
-                PlayCamera(fenceCameraOneTexture, "one");
-        }
-        else
-        {
-            StopCamera("one");
-        }
-    }
-
-    public void ToggleFenceCameraViewTwo()
-    {
-        if (!isPlayingCameraTwo)
-        {
-            if (isPlayingCameraOne)
-                SwitchCamera(fenceCameraTwoTexture, "two");
-            else
-                PlayCamera(fenceCameraTwoTexture, "two");
-        }
-        else
-        {
-            StopCamera("two");
-        }
-    }
 
     // === Smooth transition between two cameras ===
-    private void SwitchCamera(RenderTexture toTexture, string toCam)
+    private void SwitchCamera(int index)
     {
-        LeanTween.alphaCanvas(fullBackgroundVideoCanvasGroup, 0f, 0.3f)
+        PopupVideoPlayer.Stop();
+        LeanTween.alphaCanvas(fencePopupVideoCanvasGroup, 0f, 0.3f)
             .setEase(LeanTweenType.easeInOutSine)
             .setOnComplete(() =>
             {
-                fullBackgroundVideoPlayer.texture = toTexture;
+                PopupVideoPlayer.clip = popupVideoClip[index];
+                currentIndex = index;
+                PopupVideoPlayer.Play();
 
-                LeanTween.alphaCanvas(fullBackgroundVideoCanvasGroup, 1f, 0.3f)
+                LeanTween.alphaCanvas(fencePopupVideoCanvasGroup, 1f, 0.3f)
                     .setEase(LeanTweenType.easeInOutSine)
                     .setOnComplete(() =>
                     {
-                        fullBackgroundVideoCanvasGroup.interactable = true;
-                        fullBackgroundVideoCanvasGroup.blocksRaycasts = true;
+                        fencePopupVideoCanvasGroup.interactable = true;
+                        fencePopupVideoCanvasGroup.blocksRaycasts = true; 
                     });
-
-                // update flags
-                if (toCam == "one")
-                {
-                    isPlayingCameraOne = true;
-                    isPlayingCameraTwo = false;
-
-                    VideoToggle(fenceIntrusionVideoPlayerOne, true);
-                    VideoToggle(fenceIntrusionVideoPlayerTwo, false);
-
-                }
-                else
-                {
-                    isPlayingCameraTwo = true;
-                    isPlayingCameraOne = false;
-
-                    VideoToggle(fenceIntrusionVideoPlayerOne, false);
-                    VideoToggle(fenceIntrusionVideoPlayerTwo, true);
-
-                }
             });
     }
-
-    private void PlayCamera(RenderTexture texture, string cam)
+    private void PlayPopupCamera(int index)
     {
-        fullBackgroundVideoPlayer.texture = texture;
-
         ShowPinPoint(false);
+        PopupVideoPlayer.clip = popupVideoClip[index];
+        PopupVideoPlayer.Play();
+
+        isPlayingPopup = true;
+        currentIndex = index;
 
         if (blackBGOverlay.alpha < 1f)
             blackBGOverlayId = LeanTween.alphaCanvas(blackBGOverlay, 1f, blackBGOverlayeDuration)
             .setEase(LeanTweenType.easeInOutSine).id;
-        LeanTween.alphaCanvas(fullBackgroundVideoCanvasGroup, 1f, 0.5f)
+
+        LeanTween.alphaCanvas(fencePopupVideoCanvasGroup, 1f, blackBGOverlayeDuration)
             .setEase(LeanTweenType.easeInOutSine)
             .setOnComplete(() =>
             {
-                fullBackgroundVideoCanvasGroup.interactable = true;
-                fullBackgroundVideoCanvasGroup.blocksRaycasts = true;
+                fencePopupVideoCanvasGroup.interactable = true;
+                fencePopupVideoCanvasGroup.blocksRaycasts = true;
+                PopupVideoPlayer.Play();
             });
 
-        if (cam == "one") isPlayingCameraOne = true;
-        else isPlayingCameraTwo = true;
-
-        if (cam == "one")
-        {
-            VideoToggle(fenceIntrusionVideoPlayerOne, true);
-        }
-        else
-        {
-            VideoToggle(fenceIntrusionVideoPlayerTwo, true);
-        }
     }
 
-    private void StopCamera(string cam)
+    private void StopCamera()
     {
-        LeanTween.alphaCanvas(fullBackgroundVideoCanvasGroup, 0f, 0.5f)
+        PopupVideoPlayer.Stop();
+        LeanTween.alphaCanvas(fencePopupVideoCanvasGroup, 0f, 0.5f)
             .setEase(LeanTweenType.easeInOutSine)
             .setOnComplete(() =>
             {
+                if (dashboardController.activeState.state == MenuState.VirtualPatrol)
+                    ShowPinPoint(true);
 
-                ShowPinPoint(true);
-                fullBackgroundVideoPlayer.texture = null;
+                fencePopupVideoCanvasGroup.interactable = false;
+                fencePopupVideoCanvasGroup.blocksRaycasts = false;
 
-                fullBackgroundVideoCanvasGroup.interactable = false;
-                fullBackgroundVideoCanvasGroup.blocksRaycasts = false;
+                isPlayingPopup = false;
+                currentIndex = -1;
 
-                if (cam == "one") isPlayingCameraOne = false;
-                else isPlayingCameraTwo = false;
-
-                if (cam == "one")
-                {
-                    VideoToggle(fenceIntrusionVideoPlayerOne, false);
-                }
-                else
-                {
-                    VideoToggle(fenceIntrusionVideoPlayerTwo, false);
-                }
             });
-        SoundManager.Instance.StopLoopedSFX();
         blackBGOverlayId = LeanTween.alphaCanvas(blackBGOverlay, 0f, blackBGOverlayeDuration)
             .setEase(LeanTweenType.easeInOutSine).id;
     }
@@ -318,6 +221,6 @@ public class VirtualPatrol : _MenuState
                 pinPoint.blocksRaycasts = false;
             });
         }
-            
+
     }
 }

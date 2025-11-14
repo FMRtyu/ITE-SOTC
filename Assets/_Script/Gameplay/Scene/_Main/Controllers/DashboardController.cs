@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DashboardController : MonoBehaviour
 {
@@ -10,13 +11,17 @@ public class DashboardController : MonoBehaviour
     private Dictionary<MenuState, _MenuState> menuDictionary = new Dictionary<MenuState, _MenuState>();
 
     //The current active menu
-    private _MenuState activeState;
+    public _MenuState activeState;
 
     //To easier jump back one step, we can use a stack
     //This was also suggested in the Game Programming Patterns book
     //If so we don't have to hard-code in each state what happens when we jump back one step
     private Stack<MenuState> stateHistory = new Stack<MenuState>();
     // Start is called once before the first execution of Update after the MonoBehaviour is created
+
+    [SerializeField] private Image backgroundIMG;
+
+    public MenuState currentMenuState = MenuState.Home;
     void Start()
     {
         initDashboard();
@@ -123,6 +128,9 @@ public class DashboardController : MonoBehaviour
         {
             stateHistory.Push(newState);
         }
+
+        currentMenuState = newState;
     }
     #endregion
+
 }

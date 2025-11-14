@@ -32,6 +32,9 @@ public class LandingController : MonoBehaviour
         landingVideoBackground.clip = landingVideoClip;
         landingVideoBackground.Play();
 
+        //play bgm
+        SoundManager.Instance.PlaySFX("theEpic");
+
         // Begin click to start fade loop
         FadeOutButton();
     }
@@ -40,6 +43,8 @@ public class LandingController : MonoBehaviour
     {
         // Stop the button fade loop
         LeanTween.cancel(fadeTweenId);
+
+        SoundManager.Instance.PlaySFX("button_click");
 
         // Play transition video
         LeanTween.scale(headerTexts, Vector3.zero, 0.5f).setOnComplete(() =>

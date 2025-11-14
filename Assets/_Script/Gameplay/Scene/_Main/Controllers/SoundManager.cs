@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Video;
 
 public class SoundManager : MonoBehaviourSingletonPersistent<SoundManager>
 {
@@ -10,6 +11,8 @@ public class SoundManager : MonoBehaviourSingletonPersistent<SoundManager>
     [Header("Audio Clips")]
     [SerializeField] private List<AudioClipData> audioClips = new List<AudioClipData>();
 
+    private LTDescr currentFadeTween; // store current tween so it can be cancelled if needed
+
     public void PlaySFX(string clipName)
     {
         var clipData = audioClips.Find(clip => clip.clipName == clipName);
@@ -18,7 +21,7 @@ public class SoundManager : MonoBehaviourSingletonPersistent<SoundManager>
             if (clipData.loop)
             {
                 if (loopSource.isPlaying && loopSource.clip == clipData.audioClip)
-                    return; // Already playing this looped clip
+                    return;
 
                 loopSource.clip = clipData.audioClip;
                 loopSource.volume = clipData.clipVolume;
@@ -34,7 +37,25 @@ public class SoundManager : MonoBehaviourSingletonPersistent<SoundManager>
         {
             Debug.LogWarning($"[SoundManager] Audio clip '{clipName}' not found!");
         }
+    }
 
+    public void FadeOutLoopedSFX(float duration = 1f)
+    {
+        if (loopSource.isPlaying)
+        {
+            // cancel previous tween if still running
+            if (currentFadeTween != null)
+                LeanTween.cancel(currentFadeTween.id);
+
+            float startVolume = loopSource.volume;
+            currentFadeTween = LeanTween.value(gameObject, startVolume, 0f, duration)
+                .setOnUpdate((float v) => loopSource.volume = v)
+                .setOnComplete(() =>
+                {
+                    loopSource.Stop();
+                    loopSource.clip = null;
+                });
+        }
     }
 
     public void StopLoopedSFX()
@@ -43,6 +64,21 @@ public class SoundManager : MonoBehaviourSingletonPersistent<SoundManager>
         {
             loopSource.Stop();
             loopSource.clip = null;
+        }
+    }
+
+    // optional: adjust any clip volume smoothly
+    public void SetVolume(float newVolume, string clipName, float duration = 0.5f)
+    {
+        var clipData = audioClips.Find(c => c.clipName == clipName);
+        if (clipData != null)
+        {
+            clipData.clipVolume = newVolume;
+            if (loopSource.clip == clipData.audioClip)
+            {
+                LeanTween.value(gameObject, loopSource.volume, newVolume, duration)
+                    .setOnUpdate((float v) => loopSource.volume = v);
+            }
         }
     }
 }
