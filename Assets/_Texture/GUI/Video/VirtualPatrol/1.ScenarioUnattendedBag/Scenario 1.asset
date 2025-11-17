@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d63d9cfbe2857654da9caa97d56a1ada, type: 3}
+  m_Name: Scenario 1
+  m_EditorClassIdentifier: 
+  scenarioName: UnattendedBag
+  opening: {fileID: 32900000, guid: a830637de3452b547a6c585e46030319, type: 3}
+  loopingOpening: {fileID: 32900000, guid: a830637de3452b547a6c585e46030319, type: 3}
+  storyBoard:
+  - {fileID: 32900000, guid: 23370009abbe9444c84cca866e8d7d99, type: 3}
+  - {fileID: 32900000, guid: 664eef8508ba41b4b9125929ed899fef, type: 3}

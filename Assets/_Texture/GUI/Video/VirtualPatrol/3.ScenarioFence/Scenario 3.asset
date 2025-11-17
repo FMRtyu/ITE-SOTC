@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d63d9cfbe2857654da9caa97d56a1ada, type: 3}
+  m_Name: Scenario 3
+  m_EditorClassIdentifier: 
+  scenarioName: Tresspasing
+  opening: {fileID: 32900000, guid: b7c4ded0073f9dd4b83aea542ab2046f, type: 3}
+  loopingOpening: {fileID: 32900000, guid: 3079fb9cd8481534090d6c866c2ee6a0, type: 3}
+  storyBoard:
+  - {fileID: 32900000, guid: 9b38fd52757bfb140bc30274c0405c6c, type: 3}
+  - {fileID: 32900000, guid: b4cc68789a0184741b429952db367925, type: 3}
