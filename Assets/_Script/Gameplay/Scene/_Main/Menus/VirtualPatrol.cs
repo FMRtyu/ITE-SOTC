@@ -29,15 +29,17 @@ public class VirtualPatrol : _MenuState
     [SerializeField] private Button[] staffBTNS;
 
     //variables
-    bool isPlayingPopup;
-    bool intrusionInProgress;
-
-    IntrusionVideo currentIntrusionVideo;
-    CancellationTokenSource storyboardCTS;
-    CanvasGroup currentStaffBTNBG;
-
+    //popup video
     int currentIndex = -1;
     int blackBGOverlayId = -1;
+    bool isPlayingPopup;
+
+    //intrusion video
+    bool intrusionInProgress;
+    IntrusionVideo currentIntrusionVideo;
+    CancellationTokenSource storyboardCTS;
+    List<CanvasGroup> currentStaffBTNBG = new List<CanvasGroup>();
+    List<Button> selectedStaffBTN = new List<Button>();
 
     int virtualBackgroundTweenId = -1;
     int pinPointTweenId = -1;
@@ -106,6 +108,10 @@ public class VirtualPatrol : _MenuState
 
         foreach (Button button in buttons)
         {
+            // Skip staff buttons; they will have their own custom rules
+            if (System.Array.Exists(staffBTNS, x => x == button))
+                continue;
+
             button.onClick.AddListener(() =>
             {
                 SoundManager.Instance.PlaySFX("button_click");
@@ -116,8 +122,19 @@ public class VirtualPatrol : _MenuState
         foreach (Button btn in staffBTNS)
         {
             btn.interactable = false;
-            
-            btn.onClick.AddListener(() => SendSecurity(tempIndex,btn));
+
+            int indexCopy = tempIndex;
+            Animator btnAnimator = btn.GetComponent<Animator>();
+
+            btn.onClick.AddListener(() =>
+            {
+                SendSecurity(indexCopy, btn);
+
+                // Only play if not in progress
+                if (btnAnimator == null || !btnAnimator.GetBool("inProgress"))
+                    SoundManager.Instance.PlaySFX("button_click");
+            });
+
             tempIndex++;
         }
     }
@@ -179,13 +196,20 @@ public class VirtualPatrol : _MenuState
     {
         if (intrusionInProgress)
             return;
-        intrusionInProgress = true;
 
         staffBTN.interactable = false;
-        currentStaffBTNBG = staffBTN.transform.Find("Background").GetComponent<CanvasGroup>();
-        LeanTween.alphaCanvas(currentStaffBTNBG, 1f, 0.5f);
+        CanvasGroup tempCanvasGroup = staffBTN.transform.Find("Background").GetComponent<CanvasGroup>();
+        LeanTween.alphaCanvas(tempCanvasGroup, 1f, 0.5f);
 
-        StartStoryboardSequence();
+        currentStaffBTNBG.Add(tempCanvasGroup);
+
+        selectedStaffBTN.Add(staffBTN);
+
+        if (selectedStaffBTN.Count >= currentIntrusionVideo.minimalStaffRequired)
+        {
+            intrusionInProgress = true;
+            StartStoryboardSequence();
+        }
     }
 
     // ============================================================
@@ -256,8 +280,7 @@ public class VirtualPatrol : _MenuState
     {
         PopupVideoPlayer.loopPointReached -= OpeningFinished;
 
-        foreach (Button btn in staffBTNS)
-            btn.interactable = true;
+        EnableSecurityBTN(true);
     }
 
     // ============================================================
@@ -267,6 +290,12 @@ public class VirtualPatrol : _MenuState
     private void StartStoryboardSequence()
     {
         CancelStoryboardIfRunning();
+
+        foreach (Button btn in staffBTNS)
+        {
+            if (btn.interactable)
+                btn.GetComponent<Animator>().SetBool("inProgress", true);
+        }
 
         storyboardCTS = new CancellationTokenSource();
         RunStoryboardAsync(currentIntrusionVideo, storyboardCTS.Token);
@@ -301,7 +330,6 @@ public class VirtualPatrol : _MenuState
         }
     }
 
-    // ============================================================
     private void StopCamera()
     {
         CancelStoryboardIfRunning();
@@ -322,8 +350,14 @@ public class VirtualPatrol : _MenuState
 
                 if (intrusionInProgress)
                 {
-                    LeanTween.alphaCanvas(currentStaffBTNBG, 0f, 0.5f);
-                    currentStaffBTNBG = null;
+                    foreach (Button btn in staffBTNS)
+                        btn.GetComponent<Animator>().SetBool("inProgress", false);
+                    foreach (CanvasGroup cg in currentStaffBTNBG)
+                        LeanTween.alphaCanvas(cg, 0f, 0.5f);
+
+                    selectedStaffBTN.Clear();
+                    currentStaffBTNBG.Clear();
+
                     EnableSecurityBTN(false);
                     intrusionInProgress = false;
                 }
@@ -355,7 +389,7 @@ public class VirtualPatrol : _MenuState
 
     void EnableSecurityBTN(bool newCondition)
     {
-        foreach(Button staffBTN in staffBTNS)
+        foreach (Button staffBTN in staffBTNS)
         {
             staffBTN.interactable = newCondition;
         }

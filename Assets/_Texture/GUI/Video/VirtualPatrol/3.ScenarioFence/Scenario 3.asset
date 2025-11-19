@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scenarioName: Tresspasing
   opening: {fileID: 32900000, guid: b7c4ded0073f9dd4b83aea542ab2046f, type: 3}
-  loopingOpening: {fileID: 32900000, guid: 3079fb9cd8481534090d6c866c2ee6a0, type: 3}
   storyBoard:
   - {fileID: 32900000, guid: 9b38fd52757bfb140bc30274c0405c6c, type: 3}
-  - {fileID: 32900000, guid: b4cc68789a0184741b429952db367925, type: 3}
+  minimalStaffRequired: 1

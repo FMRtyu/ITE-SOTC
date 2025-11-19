@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: Scenario 1
   m_EditorClassIdentifier: 
   scenarioName: UnattendedBag
-  opening: {fileID: 32900000, guid: a830637de3452b547a6c585e46030319, type: 3}
-  loopingOpening: {fileID: 32900000, guid: a830637de3452b547a6c585e46030319, type: 3}
+  opening: {fileID: 32900000, guid: 81337dc683c6d334fbe174209e5d6439, type: 3}
   storyBoard:
-  - {fileID: 32900000, guid: 23370009abbe9444c84cca866e8d7d99, type: 3}
-  - {fileID: 32900000, guid: 664eef8508ba41b4b9125929ed899fef, type: 3}
+  - {fileID: 32900000, guid: 5f202e252f65299469d9fdba7323bea3, type: 3}
+  minimalStaffRequired: 1
