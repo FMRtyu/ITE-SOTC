@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
@@ -9,8 +10,6 @@ using UnityEngine.Video;
 public class VirtualPatrol : _MenuState
 {
     [Header("Video elements")]
-    [SerializeField] private VideoPlayer fenceBTNOne;
-    [SerializeField] private VideoPlayer fenceBTNTwo;
     [SerializeField] private VideoPlayer PopupVideoPlayer;
 
     [SerializeField] private CanvasGroup blackBGOverlay;
@@ -25,6 +24,11 @@ public class VirtualPatrol : _MenuState
     [Header("UI Element")]
     [SerializeField] private CanvasGroup pinPoint;
     [SerializeField] private CanvasGroup virtualBackgroundGroup;
+
+    [SerializeField] private GameObject intrusionPrefab;
+
+    [SerializeField] private Transform intrusionParent;
+    private List<GameObject> intrusionInstances = new List<GameObject>();
 
     [SerializeField] private Button[] staffBTNS;
 
@@ -48,6 +52,11 @@ public class VirtualPatrol : _MenuState
 
     void Awake()
     {
+        initVirtualPatrolAwake();
+    }
+
+    void Start()
+    {
         initVirtualPatrol();
     }
 
@@ -65,14 +74,14 @@ public class VirtualPatrol : _MenuState
                 pinPointTweenId = LeanTween.alphaCanvas(pinPoint, 1f, 0.5f).id;
             }).id;
 
-        VideoToggle(fenceBTNOne, true);
-        VideoToggle(fenceBTNTwo, true);
-
         EnableSecurityBTN(false);
     }
 
     void OnDisable()
     {
+
+        CancelStoryboardIfRunning();
+        
         StopCamera();
 
         LeanTween.cancel(virtualBackgroundTweenId);
@@ -81,13 +90,7 @@ public class VirtualPatrol : _MenuState
         virtualBackgroundTweenId = -1;
         pinPointTweenId = -1;
 
-        VideoToggle(fenceBTNOne, false);
-        VideoToggle(fenceBTNTwo, false);
-
         blackBGOverlay.alpha = 0f;
-
-        fenceBTNOne.SetDirectAudioMute(0, true);
-        fenceBTNTwo.SetDirectAudioMute(0, true);
 
         pinPointTweenId = LeanTween.alphaCanvas(pinPoint, 0f, 0.5f)
             .setOnComplete(() =>
@@ -96,7 +99,7 @@ public class VirtualPatrol : _MenuState
             }).id;
     }
 
-    void initVirtualPatrol()
+    void initVirtualPatrolAwake()
     {
         fencePopupVideoCanvasGroup = PopupVideoPlayer.GetComponent<CanvasGroup>();
 
@@ -136,6 +139,37 @@ public class VirtualPatrol : _MenuState
             });
 
             tempIndex++;
+        }
+    }
+
+    void initVirtualPatrol()
+    {
+        int tempIntrusionIndex = 1;
+        foreach (IntrusionVideo data in intrusionData)
+        {
+            GameObject intrusionBTNInstance = Instantiate(intrusionPrefab, intrusionParent);
+
+            var vp = intrusionBTNInstance.GetComponentInChildren<VideoPlayer>();
+            var raw = intrusionBTNInstance.GetComponentInChildren<RawImage>();
+
+            var rt = new RenderTexture(1920, 1080, 0);
+
+            vp.targetTexture = rt;
+            raw.texture = rt;
+
+            vp.clip = data.opening;
+
+            intrusionBTNInstance.transform.Find("CameraTXT").GetComponent<TMP_Text>().text = "CAM " + tempIntrusionIndex;
+
+            intrusionBTNInstance.GetComponentInChildren<Button>().onClick.AddListener(() =>
+            {
+                PlayPopupScenario(data.scenarioName);
+                SoundManager.Instance.PlaySFX("button_click");
+            });
+
+            intrusionInstances.Add(intrusionBTNInstance);
+
+            tempIntrusionIndex++;
         }
     }
 
