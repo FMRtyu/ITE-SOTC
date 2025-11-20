@@ -31,6 +31,7 @@ public class VirtualPatrol : _MenuState
     private List<GameObject> intrusionInstances = new List<GameObject>();
 
     [SerializeField] private Button[] staffBTNS;
+    List<int> selectedStaffIndex = new List<int>();
 
     //variables
     //popup video
@@ -81,7 +82,7 @@ public class VirtualPatrol : _MenuState
     {
 
         CancelStoryboardIfRunning();
-        
+
         StopCamera();
 
         LeanTween.cancel(virtualBackgroundTweenId);
@@ -121,7 +122,7 @@ public class VirtualPatrol : _MenuState
             });
         }
 
-        int tempIndex = 0;
+        int tempIndex = 1;
         foreach (Button btn in staffBTNS)
         {
             btn.interactable = false;
@@ -160,6 +161,7 @@ public class VirtualPatrol : _MenuState
             vp.clip = data.opening;
 
             intrusionBTNInstance.transform.Find("CameraTXT").GetComponent<TMP_Text>().text = "CAM " + tempIntrusionIndex;
+            intrusionBTNInstance.transform.Find("LogoBG/Logo").GetComponent<Image>().sprite = data.icon;
 
             intrusionBTNInstance.GetComponentInChildren<Button>().onClick.AddListener(() =>
             {
@@ -173,9 +175,9 @@ public class VirtualPatrol : _MenuState
         }
     }
 
-    public override void InitState(DashboardController dashboardController)
+    public override void InitState(DashboardController dashboardController, UIManager uiManager)
     {
-        base.InitState(dashboardController);
+        base.InitState(dashboardController, uiManager);
         state = MenuState.VirtualPatrol;
     }
 
@@ -190,6 +192,8 @@ public class VirtualPatrol : _MenuState
             btn.interactable = false;
 
         PopupVideoPlayer.isLooping = true;
+
+        SoundManager.Instance.SetVolume(0.05f, "theEpic", 1f);
 
         if (index != currentIndex)
         {
@@ -208,7 +212,7 @@ public class VirtualPatrol : _MenuState
     {
         if (intrusionInProgress)
             return;
-
+        SoundManager.Instance.SetVolume(0.05f, "theEpic", 1f);
         CancelStoryboardIfRunning();
 
         foreach (IntrusionVideo data in intrusionData)
@@ -231,30 +235,74 @@ public class VirtualPatrol : _MenuState
         if (intrusionInProgress)
             return;
 
+        // Lock button selected
         staffBTN.interactable = false;
-        CanvasGroup tempCanvasGroup = staffBTN.transform.Find("Background").GetComponent<CanvasGroup>();
-        LeanTween.alphaCanvas(tempCanvasGroup, 1f, 0.5f);
+        selectedStaffIndex.Add(index);
 
-        currentStaffBTNBG.Add(tempCanvasGroup);
+        // Highlight background
+        CanvasGroup tempBackground = staffBTN.transform.Find("Background").GetComponent<CanvasGroup>();
+        LeanTween.alphaCanvas(tempBackground, 1f, 0.5f);
 
         selectedStaffBTN.Add(staffBTN);
+        currentStaffBTNBG.Add(tempBackground);
 
-        if (selectedStaffBTN.Count >= currentIntrusionVideo.minimalStaffRequired)
+        // If staff minimum reached, check correctness
+        if (selectedStaffBTN.Count >= currentIntrusionVideo.correctStaffIndex.Length)
         {
             intrusionInProgress = true;
-            StartStoryboardSequence();
+
+            // Tutup notifikasi kalau masih ada
+            uiManager.HideNotification();
+
+            bool isCorrect = CheckStaffCorrect();
+
+            if (isCorrect)
+            {
+                StartStoryboardSequence();
+            }
+            else
+            {
+                uiManager.ShowNotification("Wrong Security Staff Selected!", 2f);
+
+                ResetStaffSelection();
+                intrusionInProgress = false;
+            }
         }
+    }
+
+    private bool CheckStaffCorrect()
+    {
+        foreach (int correctIndex in currentIntrusionVideo.correctStaffIndex)
+        {
+            if (!selectedStaffIndex.Contains(correctIndex))
+                return false;
+        }
+
+        return true;
+    }
+
+    private void ResetStaffSelection()
+    {
+        // Reset animator
+        foreach (Button btn in staffBTNS)
+            btn.GetComponent<Animator>().SetBool("inProgress", false);
+
+        // Fade out highlight
+        foreach (CanvasGroup cg in currentStaffBTNBG)
+            LeanTween.alphaCanvas(cg, 0f, 0.5f);
+
+        // Clear list
+        selectedStaffBTN.Clear();
+        currentStaffBTNBG.Clear();
+        selectedStaffIndex.Clear();
+
+        // Enable semua staff button lagi
+        EnableSecurityBTN(true);
     }
 
     // ============================================================
     // INTERNAL VIDEO LOGIC
     // ============================================================
-
-    private void VideoToggle(VideoPlayer vp, bool play)
-    {
-        if (play) vp.Play();
-        else vp.Pause();
-    }
 
     private void SwitchCamera(int index)
     {
@@ -314,6 +362,8 @@ public class VirtualPatrol : _MenuState
     {
         PopupVideoPlayer.loopPointReached -= OpeningFinished;
 
+        uiManager.ShowNotification("Intrusion Detected! Select the correct Security Staff!", 5f);
+
         EnableSecurityBTN(true);
     }
 
@@ -348,7 +398,6 @@ public class VirtualPatrol : _MenuState
 
                 await VideoAwaiter.WaitForEnd(PopupVideoPlayer);
             }
-
             StopCamera();
         }
         catch { }
@@ -369,6 +418,9 @@ public class VirtualPatrol : _MenuState
         CancelStoryboardIfRunning();
 
         PopupVideoPlayer.Stop();
+
+        if (intrusionInProgress || isPlayingPopup)
+            SoundManager.Instance.SetVolume(0.1f, "theEpic", 1f);
 
         LeanTween.alphaCanvas(fencePopupVideoCanvasGroup, 0f, 0.5f)
             .setEase(LeanTweenType.easeInOutSine)
@@ -391,6 +443,7 @@ public class VirtualPatrol : _MenuState
 
                     selectedStaffBTN.Clear();
                     currentStaffBTNBG.Clear();
+                    selectedStaffIndex.Clear();
 
                     EnableSecurityBTN(false);
                     intrusionInProgress = false;

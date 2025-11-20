@@ -20,6 +20,7 @@ public class DashboardController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     [SerializeField] private Image backgroundIMG;
+    [SerializeField] private UIManager uiManager;
 
     public MenuState currentMenuState = MenuState.Home;
     void Start()
@@ -38,7 +39,7 @@ public class DashboardController : MonoBehaviour
             }
 
             //Inject a reference to this script into all menus
-            menu.InitState(dashboardController: this);
+            menu.InitState(dashboardController: this, uiManager: uiManager);
 
             //Check if this key already exists, because it means we have forgotten to give a menu its unique key
             if (menuDictionary.ContainsKey(menu.state))

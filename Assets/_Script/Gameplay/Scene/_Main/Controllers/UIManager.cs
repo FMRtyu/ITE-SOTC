@@ -1,6 +1,6 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -22,10 +22,19 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject alarmMonitoringButton;
     [SerializeField] private GameObject virtualPatrolButton;
 
+    [Header("notification elements")]
+    [SerializeField] private Animator notificationAnimator;
+    [SerializeField] private TMP_Text notificationText;
+
+    private int hideDelayId = -1;
+    private bool isShowing = false;
+
     private List<GameObject> navGroup = new List<GameObject>();
 
     [Header("debug")]
     [SerializeField] private bool skipLanding = false;
+
+    [SerializeField] private GameObject designReference;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -40,6 +49,8 @@ public class UIManager : MonoBehaviour
         navGroup.Add(virtualPatrolButton);
 
         activeBTN(HomeButton);
+
+        designReference.SetActive(false);
     }
 
     private void initUIElement()
@@ -112,7 +123,7 @@ public class UIManager : MonoBehaviour
         foreach (GameObject item in navGroup)
         {
             deactiveBTN(item);
-        } 
+        }
         btn.transform.GetChild(0).gameObject.SetActive(true);
         btn.transform.GetChild(1).gameObject.SetActive(false);
     }
@@ -142,9 +153,45 @@ public class UIManager : MonoBehaviour
             landingCanvasGroup.interactable = false;
             landingCanvasGroup.blocksRaycasts = false;
 
-            SoundManager.Instance.SetVolume(0.2f, "theEpic", 1f);
+            SoundManager.Instance.SetVolume(0.1f, "theEpic", 1f);
         });
 
+    }
+
+    public void ShowNotification(string message, float duration = 2f)
+    {
+        // Cancel delay sebelumnya (kalau ada)
+        if (hideDelayId != -1)
+            LeanTween.cancel(hideDelayId);
+
+        notificationText.text = message;
+
+        if (!isShowing)
+        {
+            notificationAnimator.SetTrigger("Open");
+            isShowing = true;
+        }
+
+        Debug.Log("Show Notification: " + message);
+
+        hideDelayId = LeanTween.delayedCall(duration, () =>
+        {
+            HideNotification();
+        }).id;
+    }
+
+    public void HideNotification()
+    {
+        if (!isShowing)
+            return;
+
+        // Cancel delay (kalau masih aktif)
+        if (hideDelayId != -1)
+            LeanTween.cancel(hideDelayId);
+
+        notificationAnimator.SetTrigger("Close");
+        isShowing = false;
+        hideDelayId = -1;
     }
 
 

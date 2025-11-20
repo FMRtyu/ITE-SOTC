@@ -7,12 +7,14 @@ public class _MenuState : MonoBehaviour
 
 
         protected DashboardController dashboardController;
+        protected UIManager uiManager;
         
 
         //Dependency injection of the MenuController to make it easier to reference it from each menu
-        public virtual void InitState(DashboardController dashboardController)
+        public virtual void InitState(DashboardController dashboardController, UIManager uiManager)
         {
             this.dashboardController = dashboardController;
+            this.uiManager = uiManager;
         }
 
 
