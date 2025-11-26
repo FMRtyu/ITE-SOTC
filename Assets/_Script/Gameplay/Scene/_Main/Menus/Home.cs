@@ -11,9 +11,9 @@ public class Home : _MenuState
     [SerializeField] private GameObject campusContentParent;
     private List<GameObject> campusEventContents = new List<GameObject>();
     //Specific for this state
-    public override void InitState(DashboardController dashboardController)
+    public override void InitState(DashboardController dashboardController, UIManager uiManager)
     {
-        base.InitState(dashboardController);
+        base.InitState(dashboardController, uiManager);
 
         state = MenuState.Home;
     }
