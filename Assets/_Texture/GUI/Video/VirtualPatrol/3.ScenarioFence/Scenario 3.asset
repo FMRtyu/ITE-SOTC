@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scenarioName: Fence Intrusion Detection / Trespass
   icon: {fileID: 21300000, guid: b0de66c944e0e1543b9ddaecf5cf321d, type: 3}
-  opening: {fileID: 32900000, guid: b7c4ded0073f9dd4b83aea542ab2046f, type: 3}
-  approach: {fileID: 32900000, guid: 265cc0b2cd01381488174c5897c064de, type: 3}
-  solution: {fileID: 32900000, guid: 7faf0ff394aac5d46ab0c3f2b9554ee7, type: 3}
+  opening: {fileID: 32900000, guid: 98e8caf92ad01a24f9d4ad5d66d24100, type: 3}
+  approach: {fileID: 32900000, guid: b280f9a516f1a794eb6347d7e8250901, type: 3}
+  solution: {fileID: 32900000, guid: 09ae8f756354d024f8b049aec9417f01, type: 3}
   correctStaffIndex: 02000000

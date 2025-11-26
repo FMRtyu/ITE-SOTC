@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scenarioName: Unattended bag at venue
   icon: {fileID: 21300000, guid: bee057fdceea58749b56b30449b4e954, type: 3}
-  opening: {fileID: 32900000, guid: 81337dc683c6d334fbe174209e5d6439, type: 3}
-  storyBoard:
-  - {fileID: 32900000, guid: 5f202e252f65299469d9fdba7323bea3, type: 3}
-  correctStaffIndex: 00000000
+  opening: {fileID: 32900000, guid: 8694ec2cb9efbdf49ae2cdf985f63947, type: 3}
+  approach: {fileID: 32900000, guid: 2fc6449280b07914faaedd572cc478ea, type: 3}
+  solution: {fileID: 32900000, guid: 2ba71c687625b5d40b36db21bccb0870, type: 3}
+  correctStaffIndex: 01000000

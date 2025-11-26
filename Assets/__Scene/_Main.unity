@@ -33047,7 +33047,7 @@ MonoBehaviour:
   GPSTrackingButton: {fileID: 170101966}
   alarmMonitoringButton: {fileID: 13987593}
   virtualPatrolButton: {fileID: 1665529403}
-  skipLanding: 0
+  skipLanding: 1
   designReference: {fileID: 911806753}
 --- !u!1 &1073836662
 GameObject:
