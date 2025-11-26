@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -14,6 +16,12 @@ public class UIManager : MonoBehaviour
     [Header("HUD Elements")]
     [SerializeField] private CanvasGroup HUD;
     [SerializeField] private CanvasGroup fadeCanvasGroup;
+
+    [Header("Time & Date Elements")]
+    [SerializeField] private TMP_Text hourText;
+    [SerializeField] private TMP_Text minuteText;
+    [SerializeField] private TMP_Text secondText;
+    [SerializeField] private TMP_Text dateText;
     [Header("Navigation elements")]
     [SerializeField] private GameObject smartbuildButton;
     [SerializeField] private GameObject sustainabilityButton;
@@ -21,12 +29,6 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject GPSTrackingButton;
     [SerializeField] private GameObject alarmMonitoringButton;
     [SerializeField] private GameObject virtualPatrolButton;
-
-    [Header("notification elements")]
-    [SerializeField] private Animator notificationAnimator;
-    [SerializeField] private TMP_Text notificationText;
-
-    private int hideDelayId = -1;
     private bool isShowing = false;
 
     private List<GameObject> navGroup = new List<GameObject>();
@@ -35,6 +37,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] private bool skipLanding = false;
 
     [SerializeField] private GameObject designReference;
+
+    //var
+    private DateTime today;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -55,8 +60,15 @@ public class UIManager : MonoBehaviour
 
     private void initUIElement()
     {
+        today = DateTime.Now;
         landingCanvasGroup = landingPage.GetComponent<CanvasGroup>();
         dashboardCanvasGroup = dashboardPage.GetComponent<CanvasGroup>();
+        // Format: 6th October 2025 Friday
+        string formatted = today.ToString("d MMMM yyyy dddd");
+        // Add "st / nd / rd / th"
+        formatted = AddOrdinal(today.Day) + today.ToString(" MMMM yyyy dddd");
+
+        dateText.text = formatted;
 
         if (skipLanding)
         {
@@ -73,8 +85,22 @@ public class UIManager : MonoBehaviour
             dashboardCanvasGroup.blocksRaycasts = false;
         }
         PopOutFade();
+        StartCoroutine(UpdateTime());
 
+    }
 
+    IEnumerator UpdateTime()
+    {
+        while (true)
+        {
+            DateTime now = DateTime.Now;
+
+            hourText.text = now.ToString("HH");
+            minuteText.text = now.ToString("mm");
+            secondText.text = now.ToString("ss");
+
+            yield return new WaitForSeconds(1f);
+        }
     }
 
     public void OpenMenu(int index)
@@ -157,43 +183,13 @@ public class UIManager : MonoBehaviour
         });
 
     }
-
-    public void ShowNotification(string message, float duration = 2f)
+    string AddOrdinal(int day)
     {
-        // Cancel delay sebelumnya (kalau ada)
-        if (hideDelayId != -1)
-            LeanTween.cancel(hideDelayId);
-
-        notificationText.text = message;
-
-        if (!isShowing)
-        {
-            notificationAnimator.SetTrigger("Open");
-            isShowing = true;
-        }
-
-        Debug.Log("Show Notification: " + message);
-
-        hideDelayId = LeanTween.delayedCall(duration, () =>
-        {
-            HideNotification();
-        }).id;
+        if (day % 10 == 1 && day != 11) return day + "st";
+        if (day % 10 == 2 && day != 12) return day + "nd";
+        if (day % 10 == 3 && day != 13) return day + "rd";
+        return day + "th";
     }
-
-    public void HideNotification()
-    {
-        if (!isShowing)
-            return;
-
-        // Cancel delay (kalau masih aktif)
-        if (hideDelayId != -1)
-            LeanTween.cancel(hideDelayId);
-
-        notificationAnimator.SetTrigger("Close");
-        isShowing = false;
-        hideDelayId = -1;
-    }
-
 
     #region Fade Controls
     public void PopInFade()

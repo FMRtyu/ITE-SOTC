@@ -12,10 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d63d9cfbe2857654da9caa97d56a1ada, type: 3}
   m_Name: Scenario 1
   m_EditorClassIdentifier: 
-  scenarioName: UnattendedBag
+  scenarioName: Unattended bag at venue
   icon: {fileID: 21300000, guid: bee057fdceea58749b56b30449b4e954, type: 3}
   opening: {fileID: 32900000, guid: 81337dc683c6d334fbe174209e5d6439, type: 3}
   storyBoard:
   - {fileID: 32900000, guid: 5f202e252f65299469d9fdba7323bea3, type: 3}
-  minimalStaffRequired: 1
-  correctStaffIndex: 01000000
+  correctStaffIndex: 00000000

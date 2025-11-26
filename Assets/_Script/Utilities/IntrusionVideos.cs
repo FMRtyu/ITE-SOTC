@@ -11,13 +11,12 @@ public class IntrusionVideo : ScriptableObject
     public Sprite icon;
 
 
-    [Header("Opening Video")]
+    [Header("Storyboard Sequence")]
     [Tooltip("The opening video clip for this scenario. Usually played before gameplay or before the storyboard starts.")]
     public VideoClip opening;
 
-    [Header("Storyboard Sequence")]
-    [Tooltip("A sequence of storyboard video clips. These will be played in order as part of the narrative.")]
-    public VideoClip[] storyBoard;
+    public VideoClip approach;
+    public VideoClip solution;
     
     [Tooltip("Correct Staff Indexes, 1 for Arun Rajenoran, 2 for chen hao, 3 for Ananya Rajesh")]
     public int[] correctStaffIndex;  
