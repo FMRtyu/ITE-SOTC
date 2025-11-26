@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d63d9cfbe2857654da9caa97d56a1ada, type: 3}
   m_Name: Scenario 3
   m_EditorClassIdentifier: 
-  scenarioName: Tresspasing
+  scenarioName: Fence Intrusion Detection / Trespass
+  icon: {fileID: 21300000, guid: b0de66c944e0e1543b9ddaecf5cf321d, type: 3}
   opening: {fileID: 32900000, guid: b7c4ded0073f9dd4b83aea542ab2046f, type: 3}
-  storyBoard:
-  - {fileID: 32900000, guid: 9b38fd52757bfb140bc30274c0405c6c, type: 3}
-  minimalStaffRequired: 1
+  approach: {fileID: 32900000, guid: 265cc0b2cd01381488174c5897c064de, type: 3}
+  solution: {fileID: 32900000, guid: 7faf0ff394aac5d46ab0c3f2b9554ee7, type: 3}
+  correctStaffIndex: 02000000

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
@@ -9,10 +10,10 @@ using UnityEngine.Video;
 public class VirtualPatrol : _MenuState
 {
     [Header("Video elements")]
-    [SerializeField] private VideoPlayer fenceBTNOne;
-    [SerializeField] private VideoPlayer fenceBTNTwo;
     [SerializeField] private VideoPlayer PopupVideoPlayer;
+    [SerializeField] private VideoPlayer FullScreenVP;
 
+    [SerializeField] private TMP_Text scenarioTitleTXT;
     [SerializeField] private CanvasGroup blackBGOverlay;
 
     [SerializeField] private float blackBGOverlayeDuration = 0.5f;
@@ -22,11 +23,26 @@ public class VirtualPatrol : _MenuState
     [SerializeField] private VideoClip[] popupVideoClip;
     [SerializeField] private IntrusionVideo[] intrusionData;
 
+    [Header("Assign Staff UI")]
+    [SerializeField] private CanvasGroup assignBG;
+    [SerializeField] private TMP_Text assignTXT;
+    [SerializeField] private CanvasGroup assignBlue;
+    [SerializeField] private CanvasGroup assignRed;
+
+    private int assignPanelTweenId = -1;
+    private int assignBGTweenId = -1;
+
+
     [Header("UI Element")]
     [SerializeField] private CanvasGroup pinPoint;
     [SerializeField] private CanvasGroup virtualBackgroundGroup;
-
     [SerializeField] private Button[] staffBTNS;
+
+    [Header("Incident elements")]
+    [SerializeField] private GameObject intrusionPrefab;
+    [SerializeField] private Transform intrusionParent;
+    private List<GameObject> intrusionInstances = new List<GameObject>();
+    List<int> selectedStaffIndex = new List<int>();
 
     //variables
     //popup video
@@ -41,12 +57,19 @@ public class VirtualPatrol : _MenuState
     List<CanvasGroup> currentStaffBTNBG = new List<CanvasGroup>();
     List<Button> selectedStaffBTN = new List<Button>();
 
+    //tweens
     int virtualBackgroundTweenId = -1;
     int pinPointTweenId = -1;
 
-    CanvasGroup fencePopupVideoCanvasGroup;
+    CanvasGroup PopupVideoCG;
+    CanvasGroup fullscreenVideoCG;
 
     void Awake()
+    {
+        initVirtualPatrolAwake();
+    }
+
+    void Start()
     {
         initVirtualPatrol();
     }
@@ -65,14 +88,12 @@ public class VirtualPatrol : _MenuState
                 pinPointTweenId = LeanTween.alphaCanvas(pinPoint, 1f, 0.5f).id;
             }).id;
 
-        VideoToggle(fenceBTNOne, true);
-        VideoToggle(fenceBTNTwo, true);
-
         EnableSecurityBTN(false);
     }
 
     void OnDisable()
     {
+        //CancelStoryboardIfRunning();
         StopCamera();
 
         LeanTween.cancel(virtualBackgroundTweenId);
@@ -81,13 +102,7 @@ public class VirtualPatrol : _MenuState
         virtualBackgroundTweenId = -1;
         pinPointTweenId = -1;
 
-        VideoToggle(fenceBTNOne, false);
-        VideoToggle(fenceBTNTwo, false);
-
         blackBGOverlay.alpha = 0f;
-
-        fenceBTNOne.SetDirectAudioMute(0, true);
-        fenceBTNTwo.SetDirectAudioMute(0, true);
 
         pinPointTweenId = LeanTween.alphaCanvas(pinPoint, 0f, 0.5f)
             .setOnComplete(() =>
@@ -96,13 +111,15 @@ public class VirtualPatrol : _MenuState
             }).id;
     }
 
-    void initVirtualPatrol()
+    void initVirtualPatrolAwake()
     {
-        fencePopupVideoCanvasGroup = PopupVideoPlayer.GetComponent<CanvasGroup>();
+        PopupVideoCG = PopupVideoPlayer.GetComponent<CanvasGroup>();
 
-        fencePopupVideoCanvasGroup.alpha = 0f;
-        fencePopupVideoCanvasGroup.interactable = false;
-        fencePopupVideoCanvasGroup.blocksRaycasts = false;
+        PopupVideoCG.alpha = 0f;
+        PopupVideoCG.interactable = false;
+        PopupVideoCG.blocksRaycasts = false;
+
+        fullscreenVideoCG = FullScreenVP.GetComponent<CanvasGroup>();
 
         Button[] buttons = GetComponentsInChildren<Button>();
 
@@ -118,30 +135,63 @@ public class VirtualPatrol : _MenuState
             });
         }
 
-        int tempIndex = 0;
-        foreach (Button btn in staffBTNS)
+        // int tempIndex = 1;
+        // foreach (Button btn in staffBTNS)
+        // {
+        //     btn.interactable = false;
+
+        //     int indexCopy = tempIndex;
+        //     Animator btnAnimator = btn.GetComponent<Animator>();
+
+        //     btn.onClick.AddListener(() =>
+        //     {
+        //         SendSecurity(indexCopy, btn);
+
+        //         // Only play if not in progress
+        //         if (btnAnimator == null || !btnAnimator.GetBool("inProgress"))
+        //             SoundManager.Instance.PlaySFX("button_click");
+        //     });
+
+        //     tempIndex++;
+        // }
+    }
+
+    void initVirtualPatrol()
+    {
+        int tempIntrusionIndex = 1;
+        foreach (IntrusionVideo data in intrusionData)
         {
-            btn.interactable = false;
+            GameObject intrusionBTNInstance = Instantiate(intrusionPrefab, intrusionParent);
 
-            int indexCopy = tempIndex;
-            Animator btnAnimator = btn.GetComponent<Animator>();
+            var vp = intrusionBTNInstance.GetComponentInChildren<VideoPlayer>();
+            var raw = intrusionBTNInstance.GetComponentInChildren<RawImage>();
 
-            btn.onClick.AddListener(() =>
+            var rt = new RenderTexture(1920, 1080, 0);
+
+            vp.targetTexture = rt;
+            raw.texture = rt;
+
+            vp.clip = data.opening;
+
+            intrusionBTNInstance.transform.Find("CameraTXT").GetComponent<TMP_Text>().text = "CAM " + tempIntrusionIndex;
+            intrusionBTNInstance.transform.Find("ScenarioTXT").GetComponent<TMP_Text>().text = data.scenarioName;
+            intrusionBTNInstance.transform.Find("LogoBG/Logo").GetComponent<Image>().sprite = data.icon;
+
+            intrusionBTNInstance.GetComponentInChildren<Button>().onClick.AddListener(() =>
             {
-                SendSecurity(indexCopy, btn);
-
-                // Only play if not in progress
-                if (btnAnimator == null || !btnAnimator.GetBool("inProgress"))
-                    SoundManager.Instance.PlaySFX("button_click");
+                PlayPopupScenario(data.scenarioName);
+                SoundManager.Instance.PlaySFX("button_click");
             });
 
-            tempIndex++;
+            intrusionInstances.Add(intrusionBTNInstance);
+
+            tempIntrusionIndex++;
         }
     }
 
-    public override void InitState(DashboardController dashboardController)
+    public override void InitState(DashboardController dashboardController, UIManager uiManager)
     {
-        base.InitState(dashboardController);
+        base.InitState(dashboardController, uiManager);
         state = MenuState.VirtualPatrol;
     }
 
@@ -150,12 +200,14 @@ public class VirtualPatrol : _MenuState
         if (intrusionInProgress)
             return;
 
-        CancelStoryboardIfRunning();
+        //CancelStoryboardIfRunning();
 
         foreach (Button btn in staffBTNS)
             btn.interactable = false;
 
         PopupVideoPlayer.isLooping = true;
+
+        SoundManager.Instance.SetVolume(0.05f, "theEpic", 1f);
 
         if (index != currentIndex)
         {
@@ -170,63 +222,193 @@ public class VirtualPatrol : _MenuState
         }
     }
 
+    // public void PlayPopupScenario(string scenarioName)
+    // {
+    //     if (intrusionInProgress)
+    //         return;
+    //     SoundManager.Instance.SetVolume(0.05f, "theEpic", 1f);
+    //     CancelStoryboardIfRunning();
+
+    //     foreach (IntrusionVideo data in intrusionData)
+    //     {
+    //         if (data.scenarioName == scenarioName)
+    //         {
+    //             currentIntrusionVideo = data;
+    //             PopupVideoPlayer.isLooping = false;
+
+    //             PlayPopupCamera(-1, data);
+    //             return;
+    //         }
+    //     }
+
+    //     Debug.LogWarning($"Scenario '{scenarioName}' not found.");
+    // }
+
     public void PlayPopupScenario(string scenarioName)
     {
         if (intrusionInProgress)
             return;
+        SoundManager.Instance.SetVolume(0.05f, "theEpic", 1f);
 
-        CancelStoryboardIfRunning();
+        GetIntrusionByName(scenarioName);
 
-        foreach (IntrusionVideo data in intrusionData)
-        {
-            if (data.scenarioName == scenarioName)
+        scenarioTitleTXT.text = currentIntrusionVideo.scenarioName;
+
+        FullScreenVP.clip = currentIntrusionVideo.opening;
+        FullScreenVP.Play();
+        LeanTween.alphaCanvas(fullscreenVideoCG, 1f, 0.5f)
+            .setEase(LeanTweenType.easeInOutSine)
+            .setOnComplete(() =>
             {
-                currentIntrusionVideo = data;
-                PopupVideoPlayer.isLooping = false;
+                fullscreenVideoCG.interactable = true;
+                fullscreenVideoCG.blocksRaycasts = true;
 
-                PlayPopupCamera(-1, data);
-                return;
-            }
-        }
-
-        Debug.LogWarning($"Scenario '{scenarioName}' not found.");
+                //CancelStoryboardIfRunning();
+            });
     }
 
-    public void SendSecurity(int index, Button staffBTN)
+    public void SendSecurityToLocation()
     {
-        if (intrusionInProgress)
-            return;
+        LeanTween.alphaCanvas(fullscreenVideoCG, 0f, 0.5f)
+            .setEase(LeanTweenType.easeInOutSine)
+            .setOnComplete(() =>
+            {
+                fullscreenVideoCG.interactable = false;
+                fullscreenVideoCG.blocksRaycasts = false;
 
-        staffBTN.interactable = false;
-        CanvasGroup tempCanvasGroup = staffBTN.transform.Find("Background").GetComponent<CanvasGroup>();
-        LeanTween.alphaCanvas(tempCanvasGroup, 1f, 0.5f);
+                if (intrusionInProgress)
+                {
+                    SoundManager.Instance.SetVolume(0.1f, "theEpic", 1f);
+                    intrusionInProgress = false;
+                }
+                else
+                {
+                    foreach (int staffIndex in currentIntrusionVideo.correctStaffIndex)
+                    {
+                        Button tempBTN = staffBTNS[staffIndex];
+                        CanvasGroup tempBackground = tempBTN.transform.Find("Background").GetComponent<CanvasGroup>();
 
-        currentStaffBTNBG.Add(tempCanvasGroup);
+                        LeanTween.alphaCanvas(tempBackground, 1f, 0.5f);
+                        tempBTN.interactable = false;
 
-        selectedStaffBTN.Add(staffBTN);
+                        selectedStaffBTN.Add(tempBTN);
+                        currentStaffBTNBG.Add(tempBackground);
+                        selectedStaffIndex.Add(staffIndex);
 
-        if (selectedStaffBTN.Count >= currentIntrusionVideo.minimalStaffRequired)
+                    }
+
+                    //StartStoryboardSequence();
+                    intrusionInProgress = true;
+
+                    PlayPopupCamera(-1, currentIntrusionVideo);
+                }
+            });
+    }
+
+    // public void SendSecurity(int index, Button staffBTN)
+    // {
+    //     if (intrusionInProgress)
+    //         return;
+
+    //     // Lock button selected
+    //     staffBTN.interactable = false;
+    //     selectedStaffIndex.Add(index);
+
+    //     // Highlight background
+    //     CanvasGroup tempBackground = staffBTN.transform.Find("Background").GetComponent<CanvasGroup>();
+    //     LeanTween.alphaCanvas(tempBackground, 1f, 0.5f);
+
+    //     selectedStaffBTN.Add(staffBTN);
+    //     currentStaffBTNBG.Add(tempBackground);
+
+    //     assignTXT.text = "ASSIGN NEAREST OFFICER?\n[" + selectedStaffBTN.Count + "/" + currentIntrusionVideo.correctStaffIndex.Length + "]";
+
+    //     // If staff minimum reached, check correctness
+    //     if (selectedStaffBTN.Count >= currentIntrusionVideo.correctStaffIndex.Length)
+    //     {
+    //         intrusionInProgress = true;
+
+    //         // Tutup notifikasi kalau masih ada
+    //         //uiManager.HideNotification();
+
+    //         bool isCorrect = CheckStaffCorrect();
+
+    //         if (isCorrect)
+    //         {
+    //             assignPanelTweenId = LeanTween.alphaCanvas(assignBlue, 0f, 0.5f).setEase(LeanTweenType.easeInOutSine).setOnComplete(() =>
+    //             {
+    //                 assignBGTweenId = LeanTween.alphaCanvas(assignBG, 0f, 0.5f).setEase(LeanTweenType.easeInOutSine).setOnComplete(() =>
+    //                 {
+    //                     assignBG.interactable = false;
+    //                     assignBG.blocksRaycasts = false;
+    //                     assignBlue.interactable = false;
+    //                     assignBlue.blocksRaycasts = false;
+
+    //                     StartStoryboardSequence();
+    //                 }).id;
+    //             }).id;
+    //         }
+    //         else
+    //         {
+    //             //uiManager.ShowNotification("Wrong Security Staff Selected!", 2f);
+
+    //             assignRed.interactable = true;
+    //             assignRed.blocksRaycasts = true;
+    //             assignPanelTweenId = LeanTween.alphaCanvas(assignRed, 1f, 0.5f).setEase(LeanTweenType.easeInOutSine).setOnComplete(() =>
+    //             {
+    //                 assignPanelTweenId = LeanTween.alphaCanvas(assignRed, 0f, 0.5f).setEase(LeanTweenType.easeInOutSine).setDelay(3f).setOnComplete(() =>
+    //                 {
+    //                     assignRed.interactable = false;
+    //                     assignRed.blocksRaycasts = false;
+
+    //                     ResetStaffSelection();
+    //                     assignTXT.text = "ASSIGN NEAREST OFFICER?\n[" + selectedStaffBTN.Count + "/" + currentIntrusionVideo.correctStaffIndex.Length + "]";
+    //                     intrusionInProgress = false;
+    //                 }).id;
+    //             }).id;
+    //         }
+    //     }
+    // }
+
+    private bool CheckStaffCorrect()
+    {
+        foreach (int correctIndex in currentIntrusionVideo.correctStaffIndex)
         {
-            intrusionInProgress = true;
-            StartStoryboardSequence();
+            if (!selectedStaffIndex.Contains(correctIndex))
+                return false;
         }
+
+        return true;
+    }
+
+    private void ResetStaffSelection()
+    {
+        // Reset animator
+        foreach (Button btn in staffBTNS)
+            btn.GetComponent<Animator>().SetBool("inProgress", false);
+
+        // Fade out highlight
+        foreach (CanvasGroup cg in currentStaffBTNBG)
+            LeanTween.alphaCanvas(cg, 0f, 0.5f);
+
+        // Clear list
+        selectedStaffBTN.Clear();
+        currentStaffBTNBG.Clear();
+        selectedStaffIndex.Clear();
+
+        // Enable semua staff button lagi
+        EnableSecurityBTN(true);
     }
 
     // ============================================================
     // INTERNAL VIDEO LOGIC
     // ============================================================
 
-    private void VideoToggle(VideoPlayer vp, bool play)
-    {
-        if (play) vp.Play();
-        else vp.Pause();
-    }
-
     private void SwitchCamera(int index)
     {
         PopupVideoPlayer.Stop();
 
-        LeanTween.alphaCanvas(fencePopupVideoCanvasGroup, 0f, 0.3f)
+        LeanTween.alphaCanvas(PopupVideoCG, 0f, 0.3f)
             .setEase(LeanTweenType.easeInOutSine)
             .setOnComplete(() =>
             {
@@ -234,12 +416,12 @@ public class VirtualPatrol : _MenuState
                 currentIndex = index;
                 PopupVideoPlayer.Play();
 
-                LeanTween.alphaCanvas(fencePopupVideoCanvasGroup, 1f, 0.3f)
+                LeanTween.alphaCanvas(PopupVideoCG, 1f, 0.3f)
                     .setEase(LeanTweenType.easeInOutSine)
                     .setOnComplete(() =>
                     {
-                        fencePopupVideoCanvasGroup.interactable = true;
-                        fencePopupVideoCanvasGroup.blocksRaycasts = true;
+                        PopupVideoCG.interactable = true;
+                        PopupVideoCG.blocksRaycasts = true;
                     });
             });
     }
@@ -250,14 +432,17 @@ public class VirtualPatrol : _MenuState
 
         if (intrusionVideo != null)
         {
-            PopupVideoPlayer.clip = intrusionVideo.opening;
-            PopupVideoPlayer.loopPointReached += OpeningFinished;
+            PopupVideoPlayer.clip = intrusionVideo.approach;
+            PopupVideoPlayer.loopPointReached += OnApproachFinished;
+
+            PopupVideoPlayer.isLooping = false;
         }
         else
         {
             intrusionInProgress = false;
             PopupVideoPlayer.clip = popupVideoClip[index];
             currentIndex = index;
+            PopupVideoPlayer.isLooping = true;
         }
 
         PopupVideoPlayer.Play();
@@ -267,84 +452,125 @@ public class VirtualPatrol : _MenuState
             blackBGOverlayId = LeanTween.alphaCanvas(blackBGOverlay, 1f, blackBGOverlayeDuration)
                 .setEase(LeanTweenType.easeInOutSine).id;
 
-        LeanTween.alphaCanvas(fencePopupVideoCanvasGroup, 1f, blackBGOverlayeDuration)
+        LeanTween.alphaCanvas(PopupVideoCG, 1f, blackBGOverlayeDuration)
             .setEase(LeanTweenType.easeInOutSine)
             .setOnComplete(() =>
             {
-                fencePopupVideoCanvasGroup.interactable = true;
-                fencePopupVideoCanvasGroup.blocksRaycasts = true;
+                PopupVideoCG.interactable = true;
+                PopupVideoCG.blocksRaycasts = true;
             });
     }
 
-    private void OpeningFinished(VideoPlayer vp)
-    {
-        PopupVideoPlayer.loopPointReached -= OpeningFinished;
+    // private void OpeningFinished(VideoPlayer vp)
+    // {
+    //     PopupVideoPlayer.loopPointReached -= OpeningFinished;
 
-        EnableSecurityBTN(true);
+    //     //uiManager.ShowNotification("Intrusion Detected! Select the correct Security Staff!", 5f);
+
+    //     assignTXT.text = "ASSIGN NEAREST OFFICER?\n[0/" + currentIntrusionVideo.correctStaffIndex.Length + "]";
+
+    //     assignBG.interactable = true;
+    //     assignBG.blocksRaycasts = true;
+    //     assignBGTweenId = LeanTween.alphaCanvas(assignBG, 1f, 0.5f).setEase(LeanTweenType.easeInOutSine).setOnComplete(() =>
+    //     {
+    //         LeanTween.alphaCanvas(assignBlue, 1f, 0.5f).setEase(LeanTweenType.easeInOutSine);
+    //     }).id;
+
+    //     EnableSecurityBTN(true);
+    // }
+
+    private void OnApproachFinished(VideoPlayer vp)
+    {
+        FullScreenVP.loopPointReached -= OnApproachFinished;
+
+        StopCamera();
+
+        FullScreenVP.clip = currentIntrusionVideo.solution;
+        FullScreenVP.Play();
+        LeanTween.alphaCanvas(fullscreenVideoCG, 1f, 0.5f)
+            .setEase(LeanTweenType.easeInOutSine)
+            .setOnComplete(() =>
+            {
+                fullscreenVideoCG.interactable = true;
+                fullscreenVideoCG.blocksRaycasts = true;
+            });
     }
 
     // ============================================================
     // STORYBOARD (async)
     // ============================================================
 
-    private void StartStoryboardSequence()
-    {
-        CancelStoryboardIfRunning();
+    // private void StartStoryboardSequence()
+    // {
+    //     CancelStoryboardIfRunning();
 
-        foreach (Button btn in staffBTNS)
-        {
-            if (btn.interactable)
-                btn.GetComponent<Animator>().SetBool("inProgress", true);
-        }
+    //     foreach (Button btn in staffBTNS)
+    //     {
+    //         if (btn.interactable)
+    //             btn.GetComponent<Animator>().SetBool("inProgress", true);
+    //     }
 
-        storyboardCTS = new CancellationTokenSource();
-        RunStoryboardAsync(currentIntrusionVideo, storyboardCTS.Token);
-    }
+    //     storyboardCTS = new CancellationTokenSource();
+    //     RunStoryboardAsync(currentIntrusionVideo, storyboardCTS.Token);
+    // }
 
-    private async void RunStoryboardAsync(IntrusionVideo video, CancellationToken ct)
-    {
-        try
-        {
-            foreach (var clip in video.storyBoard)
-            {
-                ct.ThrowIfCancellationRequested();
+    // private async void RunStoryboardAsync(IntrusionVideo video, CancellationToken ct)
+    // {
+    //     try
+    //     {
+    //         foreach (var clip in video.storyBoard)
+    //         {
+    //             ct.ThrowIfCancellationRequested();
 
-                PopupVideoPlayer.clip = clip;
-                PopupVideoPlayer.Play();
+    //             PopupVideoPlayer.clip = clip;
+    //             PopupVideoPlayer.Play();
 
-                await VideoAwaiter.WaitForEnd(PopupVideoPlayer);
-            }
+    //             await VideoAwaiter.WaitForEnd(PopupVideoPlayer);
+    //         }
+    //         StopCamera();
+    //     }
+    //     catch { }
+    // }
 
-            StopCamera();
-        }
-        catch { }
-    }
+    // private void CancelStoryboardIfRunning()
+    // {
+    //     if (storyboardCTS != null)
+    //     {
+    //         storyboardCTS.Cancel();
+    //         storyboardCTS.Dispose();
+    //         storyboardCTS = null;
+    //     }
 
-    private void CancelStoryboardIfRunning()
-    {
-        if (storyboardCTS != null)
-        {
-            storyboardCTS.Cancel();
-            storyboardCTS.Dispose();
-            storyboardCTS = null;
-        }
-    }
+    //     LeanTween.cancel(assignPanelTweenId);
+    //     LeanTween.cancel(assignBGTweenId);
+
+    //     assignBG.alpha = 0f;
+    //     assignBlue.alpha = 0f;
+    //     assignRed.alpha = 0f;
+
+    //     assignBG.interactable = false;
+    //     assignBG.blocksRaycasts = false;
+    //     assignBlue.interactable = false;
+    //     assignBlue.blocksRaycasts = false;
+    //     assignRed.interactable = false;
+    //     assignRed.blocksRaycasts = false;
+    // }
 
     private void StopCamera()
     {
-        CancelStoryboardIfRunning();
+        //CancelStoryboardIfRunning();
 
         PopupVideoPlayer.Stop();
 
-        LeanTween.alphaCanvas(fencePopupVideoCanvasGroup, 0f, 0.5f)
+        LeanTween.alphaCanvas(PopupVideoCG, 0f, 0.5f)
             .setEase(LeanTweenType.easeInOutSine)
             .setOnComplete(() =>
             {
                 if (dashboardController.activeState.state == MenuState.VirtualPatrol)
                     ShowPinPoint(true);
 
-                fencePopupVideoCanvasGroup.interactable = false;
-                fencePopupVideoCanvasGroup.blocksRaycasts = false;
+                PopupVideoCG.interactable = false;
+                PopupVideoCG.blocksRaycasts = false;
 
                 isPlayingPopup = false;
 
@@ -357,9 +583,9 @@ public class VirtualPatrol : _MenuState
 
                     selectedStaffBTN.Clear();
                     currentStaffBTNBG.Clear();
+                    selectedStaffIndex.Clear();
 
                     EnableSecurityBTN(false);
-                    intrusionInProgress = false;
                 }
                 currentIndex = -1;
             });
@@ -392,6 +618,18 @@ public class VirtualPatrol : _MenuState
         foreach (Button staffBTN in staffBTNS)
         {
             staffBTN.interactable = newCondition;
+        }
+    }
+
+    void GetIntrusionByName(string scenarioName)
+    {
+        foreach (IntrusionVideo data in intrusionData)
+        {
+            if (data.scenarioName == scenarioName)
+            {
+                currentIntrusionVideo = data;
+                return;
+            }
         }
     }
 }
