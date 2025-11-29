@@ -21,6 +21,7 @@ public class VirtualPatrol : _MenuState
 
     [Header("video clips")]
     [SerializeField] private VideoClip[] popupVideoClip;
+    [SerializeField] private Sprite[] popupPlaceholder;
     [SerializeField] private IntrusionVideo[] intrusionData;
 
     [Header("Assign Staff UI")]
@@ -51,11 +52,13 @@ public class VirtualPatrol : _MenuState
     bool isPlayingPopup;
 
     //intrusion video
-    bool intrusionInProgress;
+    public bool intrusionInProgress { get; private set; } = false;
     IntrusionVideo currentIntrusionVideo;
     CancellationTokenSource storyboardCTS;
     List<CanvasGroup> currentStaffBTNBG = new List<CanvasGroup>();
     List<Button> selectedStaffBTN = new List<Button>();
+
+    string[] letters = { "A", "B", "C", "D", "E" };
 
     //tweens
     int virtualBackgroundTweenId = -1;
@@ -89,6 +92,9 @@ public class VirtualPatrol : _MenuState
             }).id;
 
         EnableSecurityBTN(false);
+
+        if (uiManager != null)
+            uiManager.ShowBlackBG(2);
     }
 
     void OnDisable()
@@ -174,7 +180,7 @@ public class VirtualPatrol : _MenuState
             vp.clip = data.opening;
 
             intrusionBTNInstance.transform.Find("CameraTXT").GetComponent<TMP_Text>().text = "CAM " + tempIntrusionIndex;
-            intrusionBTNInstance.transform.Find("ScenarioTXT").GetComponent<TMP_Text>().text = data.scenarioName;
+            intrusionBTNInstance.transform.Find("Group/GroupTXT").GetComponent<TMP_Text>().text = letters[tempIntrusionIndex - 1];
             intrusionBTNInstance.transform.Find("LogoBG/Logo").GetComponent<Image>().sprite = data.icon;
 
             intrusionBTNInstance.GetComponentInChildren<Button>().onClick.AddListener(() =>
@@ -406,15 +412,19 @@ public class VirtualPatrol : _MenuState
 
     private void SwitchCamera(int index)
     {
-        PopupVideoPlayer.Stop();
+        //placeholder for now
+        //PopupVideoPlayer.Stop();
 
         LeanTween.alphaCanvas(PopupVideoCG, 0f, 0.3f)
             .setEase(LeanTweenType.easeInOutSine)
             .setOnComplete(() =>
             {
-                PopupVideoPlayer.clip = popupVideoClip[index];
-                currentIndex = index;
-                PopupVideoPlayer.Play();
+                //placeholder for now
+                //PopupVideoPlayer.clip = popupVideoClip[index];
+                //currentIndex = index;
+                //PopupVideoPlayer.Play();
+                Image tempPlaceholder = PopupVideoPlayer.transform.Find("PlaceholderIMG").GetComponent<Image>();
+                tempPlaceholder.sprite = popupPlaceholder[index];
 
                 LeanTween.alphaCanvas(PopupVideoCG, 1f, 0.3f)
                     .setEase(LeanTweenType.easeInOutSine)
@@ -429,6 +439,7 @@ public class VirtualPatrol : _MenuState
     private void PlayPopupCamera(int index = -1, IntrusionVideo intrusionVideo = null)
     {
         ShowPinPoint(false);
+        Image tempPlaceholder = PopupVideoPlayer.transform.Find("PlaceholderIMG").GetComponent<Image>();
 
         if (intrusionVideo != null)
         {
@@ -436,6 +447,11 @@ public class VirtualPatrol : _MenuState
             PopupVideoPlayer.loopPointReached += OnApproachFinished;
 
             PopupVideoPlayer.isLooping = false;
+
+            tempPlaceholder.gameObject.SetActive(false);
+            //placeholder for now
+            PopupVideoPlayer.Play();
+            isPlayingPopup = true;
         }
         else
         {
@@ -443,10 +459,11 @@ public class VirtualPatrol : _MenuState
             PopupVideoPlayer.clip = popupVideoClip[index];
             currentIndex = index;
             PopupVideoPlayer.isLooping = true;
-        }
 
-        PopupVideoPlayer.Play();
-        isPlayingPopup = true;
+            //placeholder for now
+            tempPlaceholder.gameObject.SetActive(true);
+            tempPlaceholder.sprite = popupPlaceholder[index];
+        }
 
         if (blackBGOverlay.alpha < 1f)
             blackBGOverlayId = LeanTween.alphaCanvas(blackBGOverlay, 1f, blackBGOverlayeDuration)

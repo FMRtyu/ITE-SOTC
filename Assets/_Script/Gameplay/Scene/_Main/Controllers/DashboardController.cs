@@ -74,6 +74,19 @@ public class DashboardController : MonoBehaviour
         homeMenu.ShowCampusEventOnly();
     }
 
+    public bool CheckScenarioInProgress()
+    {
+        VirtualPatrol homeMenu = menuDictionary[MenuState.VirtualPatrol] as VirtualPatrol;
+        
+        if(currentMenuState == MenuState.VirtualPatrol && homeMenu.intrusionInProgress)
+        {
+            return true;
+        }else
+        {
+            return false;
+        }
+    }
+
     public void ShowAllHomeChildren()
     {
         Home homeMenu = menuDictionary[MenuState.Home] as Home;

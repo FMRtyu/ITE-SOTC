@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -16,6 +17,11 @@ public class UIManager : MonoBehaviour
     [Header("HUD Elements")]
     [SerializeField] private CanvasGroup HUD;
     [SerializeField] private CanvasGroup fadeCanvasGroup;
+    [SerializeField] private CanvasGroup backgroundCG;
+    [SerializeField] private GameObject muteIcon;
+    [SerializeField] private GameObject[] blackBG;
+    [SerializeField] private float delayMenuSwitch = 1f;
+    private bool isChangingMenu = false;
 
     [Header("Time & Date Elements")]
     [SerializeField] private TMP_Text hourText;
@@ -31,6 +37,10 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject virtualPatrolButton;
     private bool isShowing = false;
 
+    private int changingID = -1;
+
+    private bool isplayingBGM = false;
+
     private List<GameObject> navGroup = new List<GameObject>();
 
     [Header("debug")]
@@ -40,6 +50,8 @@ public class UIManager : MonoBehaviour
 
     //var
     private DateTime today;
+
+    private Sprite defaultBG;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -56,6 +68,8 @@ public class UIManager : MonoBehaviour
         activeBTN(HomeButton);
 
         designReference.SetActive(false);
+
+        defaultBG = backgroundCG.GetComponent<UnityEngine.UI.Image>().sprite;
     }
 
     private void initUIElement()
@@ -105,6 +119,10 @@ public class UIManager : MonoBehaviour
 
     public void OpenMenu(int index)
     {
+        if(isChangingMenu || dashboardPage.CheckScenarioInProgress())
+        {
+            return;
+        }
         MenuState selectedMenu = MenuState.Home;
         GameObject selectedNavButton = null;
         switch (index)
@@ -140,8 +158,18 @@ public class UIManager : MonoBehaviour
             dashboardPage.SetActiveState(selectedMenu);
             activeBTN(selectedNavButton);
             SoundManager.Instance.PlaySFX("button_click");
+            delayChangeMenu();
         }
 
+    }
+
+    void delayChangeMenu()
+    {
+        isChangingMenu = true;
+        LeanTween.delayedCall(delayMenuSwitch, () =>
+        {
+            isChangingMenu = false;
+        });
     }
 
     public void activeBTN(GameObject btn)
@@ -180,8 +208,28 @@ public class UIManager : MonoBehaviour
             landingCanvasGroup.blocksRaycasts = false;
 
             SoundManager.Instance.SetVolume(0.1f, "theEpic", 1f);
+            isplayingBGM = true;
         });
 
+    }
+
+    public void ChangeBackground(Sprite newBG)
+    {
+        LeanTween.cancel(changingID);
+
+        Image bgImage = backgroundCG.GetComponent<Image>();
+
+        if (newBG == bgImage.sprite)
+            return;
+        changingID = LeanTween.alphaCanvas(backgroundCG, 0f, 1f).setOnComplete(() =>
+        {
+            if (newBG == null)
+
+                bgImage.sprite = defaultBG;
+            else
+                bgImage.sprite = newBG;
+            changingID = LeanTween.alphaCanvas(backgroundCG, 1f, 1f).id;
+        }).id;
     }
     string AddOrdinal(int day)
     {
@@ -189,6 +237,37 @@ public class UIManager : MonoBehaviour
         if (day % 10 == 2 && day != 12) return day + "nd";
         if (day % 10 == 3 && day != 13) return day + "rd";
         return day + "th";
+    }
+
+    public void toggleBGM()
+    {
+        if (!isplayingBGM)
+        {
+            SoundManager.Instance.SetVolume(0.1f, "theEpic", 1f);
+            isplayingBGM = true;
+            muteIcon.SetActive(false);
+        }
+        else if (isplayingBGM)
+        {
+            SoundManager.Instance.SetVolume(0f, "theEpic", 1f);
+            isplayingBGM = false;
+            muteIcon.SetActive(true);
+        }
+    }
+
+    public void ShowBlackBG(int amount)
+    {
+        for (int i = 0; i < blackBG.Length; i++)
+        {
+            if (i < amount)
+            {
+                blackBG[i].SetActive(true);
+            }
+            else
+            {
+                blackBG[i].SetActive(false);
+            }
+        }
     }
 
     #region Fade Controls

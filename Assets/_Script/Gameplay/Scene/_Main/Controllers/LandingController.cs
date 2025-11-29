@@ -73,7 +73,6 @@ public class LandingController : MonoBehaviour
         // Unsubscribe so it doesn't trigger multiple times
         vp.loopPointReached -= OnHomeTransitionVideoEnd;
         landingVideoBackground.Stop();
-
         // Show Dashboard UI
         uiManager.ShowDashboard();
     }

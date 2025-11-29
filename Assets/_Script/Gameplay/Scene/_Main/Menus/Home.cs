@@ -5,6 +5,8 @@ using UnityEngine.UI;
 public class Home : _MenuState
 {
     [Header("UI Elements")]
+
+    [SerializeField] private Sprite menuBG;
     [Header("Campus Event Panel")]
     [SerializeField] private GameObject campusEventPanel;
     [SerializeField] private GameObject campusContentPrefab;
@@ -23,6 +25,15 @@ public class Home : _MenuState
         HideAllChildren();
 
         initHome();
+    }
+
+    void OnEnable()
+    {
+        if (uiManager != null)
+        {
+            uiManager.ChangeBackground(menuBG);
+            uiManager.ShowBlackBG(3);
+        }
     }
 
     private void HideAllChildren()
@@ -45,7 +56,7 @@ public class Home : _MenuState
             });
         }
     }
-    
+
     public void ShowChildren()
     {
         // Enable all children
@@ -53,6 +64,8 @@ public class Home : _MenuState
         {
             child.gameObject.SetActive(true);
         }
+
+        uiManager.ChangeBackground(menuBG);
     }
 
     public void ShowCampusEventOnly()
@@ -65,7 +78,7 @@ public class Home : _MenuState
         });
 
     }
-    
+
     private void SetCampusEventData()
     {
         foreach (GameObject eventPanel in campusEventContents)
