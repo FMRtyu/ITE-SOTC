@@ -27,7 +27,7 @@ public class EventInfo : MonoBehaviour
                 break;
             case "MEDIUM":
                 statusBGSprites[1].SetActive(true);
-                eventStatus.color = Color.white;
+                eventStatus.color = Color.black;
                 break;
             case "HIGH":
                 statusBGSprites[2].SetActive(true);

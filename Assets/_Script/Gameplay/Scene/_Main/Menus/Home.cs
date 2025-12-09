@@ -5,13 +5,15 @@ using UnityEngine.UI;
 public class Home : _MenuState
 {
     [Header("UI Elements")]
-
     [SerializeField] private Sprite menuBG;
+    [SerializeField] private Animator PieChartAnimator;
     [Header("Campus Event Panel")]
     [SerializeField] private GameObject campusEventPanel;
     [SerializeField] private GameObject campusContentPrefab;
     [SerializeField] private GameObject campusContentParent;
     private List<GameObject> campusEventContents = new List<GameObject>();
+
+    bool isInit = false;
     //Specific for this state
     public override void InitState(DashboardController dashboardController, UIManager uiManager)
     {
@@ -33,6 +35,16 @@ public class Home : _MenuState
         {
             uiManager.ChangeBackground(menuBG);
             uiManager.ShowBlackBG(3);
+        }
+
+        PieChartAnimator.SetBool("Init", isInit);
+    }
+
+    void OnDisable()
+    {
+        if (!isInit)
+        {
+            isInit = true;
         }
     }
 

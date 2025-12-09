@@ -69,7 +69,7 @@ public class UIManager : MonoBehaviour
 
         designReference.SetActive(false);
 
-        defaultBG = backgroundCG.GetComponent<UnityEngine.UI.Image>().sprite;
+        defaultBG = backgroundCG.GetComponent<Image>().sprite;
     }
 
     private void initUIElement()
@@ -78,9 +78,7 @@ public class UIManager : MonoBehaviour
         landingCanvasGroup = landingPage.GetComponent<CanvasGroup>();
         dashboardCanvasGroup = dashboardPage.GetComponent<CanvasGroup>();
         // Format: 6th October 2025 Friday
-        string formatted = today.ToString("d MMMM yyyy dddd");
-        // Add "st / nd / rd / th"
-        formatted = AddOrdinal(today.Day) + today.ToString(" MMMM yyyy dddd");
+        string formatted = today.ToString("dddd, d MMMM yyyy").ToUpper();
 
         dateText.text = formatted;
 
@@ -221,7 +219,13 @@ public class UIManager : MonoBehaviour
 
         if (newBG == bgImage.sprite)
             return;
-        changingID = LeanTween.alphaCanvas(backgroundCG, 0f, 1f).setOnComplete(() =>
+        if (dashboardPage.currentMenuState == MenuState.VirtualPatrol)
+        {
+            bgImage.sprite = newBG;
+        }
+        else
+        {
+            changingID = LeanTween.alphaCanvas(backgroundCG, 0f, 1f).setOnComplete(() =>
         {
             if (newBG == null)
 
@@ -230,6 +234,7 @@ public class UIManager : MonoBehaviour
                 bgImage.sprite = newBG;
             changingID = LeanTween.alphaCanvas(backgroundCG, 1f, 1f).id;
         }).id;
+        }
     }
     string AddOrdinal(int day)
     {

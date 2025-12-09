@@ -110,10 +110,10 @@ public class VirtualPatrol : _MenuState
 
         blackBGOverlay.alpha = 0f;
 
-        pinPointTweenId = LeanTween.alphaCanvas(pinPoint, 0f, 0.5f)
+        pinPointTweenId = LeanTween.alphaCanvas(pinPoint, 0f, 1f)
             .setOnComplete(() =>
             {
-                virtualBackgroundTweenId = LeanTween.alphaCanvas(virtualBackgroundGroup, 0f, 0.5f).id;
+                virtualBackgroundTweenId = LeanTween.alphaCanvas(virtualBackgroundGroup, 0f, 1f).id;
             }).id;
     }
 
