@@ -69,7 +69,7 @@ VideoPlayer:
   m_DataSource: 0
   m_TimeUpdateMode: 2
   m_PlaybackSpeed: 1
-  m_AudioOutputMode: 2
+  m_AudioOutputMode: 0
   m_TargetAudioSources: []
   m_DirectAudioVolumes: []
   m_Url: https://cdn.pixabay.com/video/2020/04/18/36510-411342239_large.mp4
@@ -200,8 +200,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -62.6, y: 0.62439}
-  m_SizeDelta: {x: 70.4291, y: 97.8225}
+  m_AnchoredPosition: {x: -80, y: 0.62439}
+  m_SizeDelta: {x: 80, y: 97.8225}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8971438563762716908
 CanvasRenderer:
@@ -258,7 +258,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7293752129914021945
 RectTransform:
   m_ObjectHideFlags: 0
@@ -351,8 +351,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 137.23, y: 0.000030517578}
-  m_SizeDelta: {x: 11.9669, y: -1.2488}
+  m_AnchoredPosition: {x: 126.7, y: -0.37469864}
+  m_SizeDelta: {x: 11.9669, y: 6.6531}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &8671546357482777685
 CanvasRenderer:
@@ -989,7 +989,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 50, y: 50}
+  m_SizeDelta: {x: 60, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6110972547069564980
 CanvasRenderer:

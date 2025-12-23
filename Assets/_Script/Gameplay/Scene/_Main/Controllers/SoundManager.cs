@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Video;
@@ -79,6 +80,18 @@ public class SoundManager : MonoBehaviourSingletonPersistent<SoundManager>
                 LeanTween.value(gameObject, loopSource.volume, newVolume, duration)
                     .setOnUpdate((float v) => loopSource.volume = v);
             }
+        }
+    }
+
+    public float GetVolumeValue(bool loop = false)
+    {
+        if (loop)
+        {
+            return loopSource.volume;
+        }
+        else
+        {
+            return sfxSource.volume;
         }
     }
 }

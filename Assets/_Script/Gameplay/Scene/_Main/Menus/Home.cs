@@ -34,7 +34,7 @@ public class Home : _MenuState
         if (uiManager != null)
         {
             uiManager.ChangeBackground(menuBG);
-            uiManager.ShowBlackBG(3);
+            uiManager.ShowBlackBG(0);
         }
 
         PieChartAnimator.SetBool("Init", isInit);

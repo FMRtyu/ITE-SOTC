@@ -79,8 +79,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: -2.867848, y: 0.000042975}
-  m_SizeDelta: {x: 85.4031, y: 32.756}
+  m_AnchoredPosition: {x: -5.988964, y: -3.2364845}
+  m_SizeDelta: {x: 100.9097, y: 73.483}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &335715940532573253
 CanvasRenderer:
@@ -110,8 +110,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -1708455461, guid: 74a69c6aa55778447bfd255443165b69, type: 3}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 08fe06a95ca50eb4c9b6e6c3790453c8, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -260,7 +260,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 100 PAX
+  m_text: <font="Oswald-Bold SDF">1200</font> PAX
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5997d6edb45c25048affd161b5038d56, type: 2}
   m_sharedMaterial: {fileID: -7390546022828668710, guid: 5997d6edb45c25048affd161b5038d56, type: 2}
@@ -287,8 +287,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 19
-  m_fontSizeBase: 19
+  m_fontSize: 16.78
+  m_fontSizeBase: 16.78
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -297,7 +297,7 @@ MonoBehaviour:
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 1024
   m_textAlignment: 65535
-  m_characterSpacing: -3
+  m_characterSpacing: 1.34
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -501,7 +501,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 5.9605, y: -0.6219}
+  m_AnchoredPosition: {x: 10.662243, y: -5.783571}
   m_SizeDelta: {x: 67.7464, y: 23.44}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &8266392193569129298
@@ -532,7 +532,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: MEDIUM
+  m_text: LOW
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5997d6edb45c25048affd161b5038d56, type: 2}
   m_sharedMaterial: {fileID: -7390546022828668710, guid: 5997d6edb45c25048affd161b5038d56, type: 2}
@@ -559,8 +559,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 19
-  m_fontSizeBase: 19
+  m_fontSize: 18
+  m_fontSizeBase: 18
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -637,8 +637,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: -5.989, y: 2.0519}
-  m_SizeDelta: {x: 92.9641, y: 38.1039}
+  m_AnchoredPosition: {x: -18.013817, y: -3.2364883}
+  m_SizeDelta: {x: 128.19, y: 68.2281}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &7248799112267821295
 CanvasRenderer:
@@ -668,8 +668,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 879924504, guid: cec647690edfe674592720ab6b48211f, type: 3}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: b50b04018806bf04ca23b941b2010a54, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -714,7 +714,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 3.1, y: 8.9}
+  m_AnchoredPosition: {x: -8, y: 10.1}
   m_SizeDelta: {x: 103, y: 34}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!1 &4859685791549169845
@@ -796,7 +796,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.00004196167, y: -4.6565}
+  m_AnchoredPosition: {x: 0.00004196167, y: -5.7}
   m_SizeDelta: {x: 0, y: 9.3129}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1360753692440248361
@@ -827,10 +827,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 12PM - 2PM
+  m_text: 1200-1400
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 5997d6edb45c25048affd161b5038d56, type: 2}
-  m_sharedMaterial: {fileID: -7390546022828668710, guid: 5997d6edb45c25048affd161b5038d56, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: d4f226be69ce72f4dbd33e67b0243987, type: 2}
+  m_sharedMaterial: {fileID: 4617342974001797331, guid: d4f226be69ce72f4dbd33e67b0243987, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -854,17 +854,17 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 19
-  m_fontSizeBase: 19
+  m_fontSize: 16.78
+  m_fontSizeBase: 16.78
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 512
+  m_VerticalAlignment: 256
   m_textAlignment: 65535
-  m_characterSpacing: -3
+  m_characterSpacing: 2.3
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -1029,7 +1029,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 90, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &5279395886256227078
@@ -1061,7 +1061,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6147149498845940523}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: c929c5599756e94498548d15dbb0cef1, type: 2}
   m_CullingMode: 0
@@ -1180,7 +1180,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'CCA FAIR 2025
+  m_text: 'CCA FAIR <font="Oswald-Bold SDF">2025</font>
 
 '
   m_isRightToLeft: 0
@@ -1209,8 +1209,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 19
-  m_fontSizeBase: 19
+  m_fontSize: 18
+  m_fontSizeBase: 18
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

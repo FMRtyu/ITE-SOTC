@@ -213,7 +213,8 @@ public class VirtualPatrol : _MenuState
 
         PopupVideoPlayer.isLooping = true;
 
-        SoundManager.Instance.SetVolume(0.05f, "theEpic", 1f);
+        if (uiManager.isplayingBGM)
+            SoundManager.Instance.SetVolume(0.01f, "theEpic", 1f);
 
         if (index != currentIndex)
         {
@@ -225,6 +226,8 @@ public class VirtualPatrol : _MenuState
         else
         {
             StopCamera();
+            if (uiManager.isplayingBGM)
+                SoundManager.Instance.SetVolume(0.02f, "theEpic", 1f);
         }
     }
 
@@ -254,7 +257,8 @@ public class VirtualPatrol : _MenuState
     {
         if (intrusionInProgress)
             return;
-        SoundManager.Instance.SetVolume(0.05f, "theEpic", 1f);
+        if (uiManager.isplayingBGM)
+            SoundManager.Instance.SetVolume(0.01f, "theEpic", 1f);
 
         GetIntrusionByName(scenarioName);
 
@@ -275,6 +279,7 @@ public class VirtualPatrol : _MenuState
 
     public void SendSecurityToLocation()
     {
+        FullScreenVP.Stop();
         LeanTween.alphaCanvas(fullscreenVideoCG, 0f, 0.5f)
             .setEase(LeanTweenType.easeInOutSine)
             .setOnComplete(() =>
@@ -284,7 +289,8 @@ public class VirtualPatrol : _MenuState
 
                 if (intrusionInProgress)
                 {
-                    SoundManager.Instance.SetVolume(0.1f, "theEpic", 1f);
+                    if (uiManager.isplayingBGM)
+                        SoundManager.Instance.SetVolume(0.02f, "theEpic", 1f);
                     intrusionInProgress = false;
                 }
                 else

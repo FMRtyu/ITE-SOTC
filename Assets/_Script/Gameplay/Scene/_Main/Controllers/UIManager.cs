@@ -39,7 +39,7 @@ public class UIManager : MonoBehaviour
 
     private int changingID = -1;
 
-    private bool isplayingBGM = false;
+    public bool isplayingBGM = true;
 
     private List<GameObject> navGroup = new List<GameObject>();
 
@@ -78,7 +78,9 @@ public class UIManager : MonoBehaviour
         landingCanvasGroup = landingPage.GetComponent<CanvasGroup>();
         dashboardCanvasGroup = dashboardPage.GetComponent<CanvasGroup>();
         // Format: 6th October 2025 Friday
-        string formatted = today.ToString("dddd, d MMMM yyyy").ToUpper();
+        string formatted =
+    today.ToString("dddd, d MMMM").ToUpper()
+    + $" <font=\"Oswald-Medium SDF\"><size=21>{today:yyyy}</size></font>";
 
         dateText.text = formatted;
 
@@ -117,7 +119,7 @@ public class UIManager : MonoBehaviour
 
     public void OpenMenu(int index)
     {
-        if(isChangingMenu || dashboardPage.CheckScenarioInProgress())
+        if (isChangingMenu || dashboardPage.CheckScenarioInProgress())
         {
             return;
         }
@@ -153,6 +155,7 @@ public class UIManager : MonoBehaviour
 
         if (selectedMenu != dashboardPage.currentMenuState)
         {
+            Debug.Log("Changing Menu to: " + selectedMenu.ToString());
             dashboardPage.SetActiveState(selectedMenu);
             activeBTN(selectedNavButton);
             SoundManager.Instance.PlaySFX("button_click");
@@ -176,19 +179,30 @@ public class UIManager : MonoBehaviour
         {
             deactiveBTN(item);
         }
-        btn.transform.GetChild(0).gameObject.SetActive(true);
-        btn.transform.GetChild(1).gameObject.SetActive(false);
+
+        if (btn.transform.childCount >= 2)
+        {
+            btn.transform.GetChild(0).gameObject.SetActive(true);
+            btn.transform.GetChild(1).gameObject.SetActive(false);
+        }
     }
 
     public void deactiveBTN(GameObject btn)
+{
+    if (btn.transform.childCount >= 2)
     {
         btn.transform.GetChild(0).gameObject.SetActive(false);
         btn.transform.GetChild(1).gameObject.SetActive(true);
     }
+}
 
     public void ShowDashboardCampusEvent()
     {
-        dashboardPage.showCampusEventPanelOnly();
+        LeanTween.delayedCall(1f, () =>
+        {
+            dashboardPage.showCampusEventPanelOnly();
+        });
+
     }
 
     public void ShowDashboard()
@@ -205,8 +219,9 @@ public class UIManager : MonoBehaviour
             landingCanvasGroup.interactable = false;
             landingCanvasGroup.blocksRaycasts = false;
 
-            SoundManager.Instance.SetVolume(0.1f, "theEpic", 1f);
-            isplayingBGM = true;
+            //toggleBGM(false);
+            SoundManager.Instance.PlaySFX("MenuOpen");
+            SoundManager.Instance.SetVolume(0.02f, "theEpic", 1f);
         });
 
     }
@@ -248,11 +263,27 @@ public class UIManager : MonoBehaviour
     {
         if (!isplayingBGM)
         {
-            SoundManager.Instance.SetVolume(0.1f, "theEpic", 1f);
+            SoundManager.Instance.SetVolume(0.02f, "theEpic", 1f);
             isplayingBGM = true;
             muteIcon.SetActive(false);
         }
         else if (isplayingBGM)
+        {
+            SoundManager.Instance.SetVolume(0f, "theEpic", 1f);
+            isplayingBGM = false;
+            muteIcon.SetActive(true);
+        }
+    }
+
+    public void toggleBGM(bool play)
+    {
+        if (play)
+        {
+            SoundManager.Instance.SetVolume(0.02f, "theEpic", 1f);
+            isplayingBGM = true;
+            muteIcon.SetActive(false);
+        }
+        else if (!play)
         {
             SoundManager.Instance.SetVolume(0f, "theEpic", 1f);
             isplayingBGM = false;
