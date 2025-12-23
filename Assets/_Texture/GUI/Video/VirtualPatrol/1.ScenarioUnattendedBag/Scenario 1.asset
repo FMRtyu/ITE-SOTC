@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scenarioName: UNATTENDED BAG AT VENUE
   icon: {fileID: 21300000, guid: bee057fdceea58749b56b30449b4e954, type: 3}
-  opening: {fileID: 32900000, guid: 7f88dab4fedeed14198fb63fa04af42d, type: 3}
-  approach: {fileID: 32900000, guid: 5e53749e52c98d9488e1609ed775e89d, type: 3}
-  solution: {fileID: 32900000, guid: 5e63fe6bfc14fb44ea2a1e3cad23ebdb, type: 3}
+  opening: {fileID: 32900000, guid: 49bb9affb26f2484698a7a813ae5a373, type: 3}
+  approach: {fileID: 32900000, guid: a91a78624f223714dbb9547472de47b0, type: 3}
+  solution: {fileID: 32900000, guid: 86bd907cbf8c1134e87bb60d221f84fe, type: 3}
   correctStaffIndex: 01000000
