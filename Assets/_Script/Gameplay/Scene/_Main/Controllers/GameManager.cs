@@ -1,7 +1,9 @@
+using System.Collections;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class GameManager : MonoBehaviourSingletonPersistent<GameManager>
 {
@@ -29,6 +31,7 @@ public class GameManager : MonoBehaviourSingletonPersistent<GameManager>
 
         campusEventJsonURL = Path.Combine(Application.persistentDataPath, "Event_Summary.json");
         //LoadOrCreateJson();
+        //StartCoroutine(CreateDefaultVideos());
     }
 
     private async void Start()
@@ -53,10 +56,10 @@ public class GameManager : MonoBehaviourSingletonPersistent<GameManager>
     public async Task LoadCampusEventDataAsync(string url)
     {
         if (!File.Exists(url))
-         {
-             Debug.Log("JSON not found, creating new one...");
+        {
+            Debug.Log("JSON not found, creating new one...");
             CreateDefaultJson();
-         }
+        }
         CampusEvents = await JsonFetcherUtility.FetchArrayAsync<CampusEventData>(url);
 
         ChangeJSONFont();
@@ -163,5 +166,65 @@ public class GameManager : MonoBehaviourSingletonPersistent<GameManager>
 
         File.WriteAllText(campusEventJsonURL, defaultJson);
         Debug.Log("Default JSON created at: " + campusEventJsonURL);
+    }
+
+    public IEnumerator CreateDefaultVideos()
+    {
+        string sourceRoot = Path.Combine(Application.streamingAssetsPath, "videos");
+        string targetRoot = Path.Combine(Application.persistentDataPath, "videos");
+
+        Directory.CreateDirectory(targetRoot);
+
+        string[] modules = { "module1", "module2", "module3", "module4", "module5" };
+
+        foreach (string module in modules)
+        {
+            string sourceModule = Path.Combine(sourceRoot, module);
+            string targetModule = Path.Combine(targetRoot, module);
+
+            if (!Directory.Exists(targetModule))
+            {
+                Directory.CreateDirectory(targetModule);
+            }
+
+            if (!Directory.Exists(sourceModule))
+                continue;
+
+            foreach (string file in Directory.GetFiles(sourceModule, "*.mp4"))
+            {
+                string fileName = Path.GetFileName(file);
+                string targetFile = Path.Combine(targetModule, fileName);
+
+                if (File.Exists(targetFile))
+                    continue;
+
+                yield return CopyFile(file, targetFile);
+            }
+
+            // Copy README.txt (once)
+            string readmeSource = Path.Combine(sourceRoot, "README.txt");
+            string readmeTarget = Path.Combine(targetRoot, "README.txt");
+
+            if (File.Exists(readmeSource) && !File.Exists(readmeTarget))
+            {
+                yield return CopyFile(readmeSource, readmeTarget);
+            }
+        }
+    }
+
+    IEnumerator CopyFile(string sourcePath, string targetPath)
+    {
+        using UnityWebRequest uwr = UnityWebRequest.Get(sourcePath);
+        yield return uwr.SendWebRequest();
+
+        if (uwr.result != UnityWebRequest.Result.Success)
+        {
+            Debug.LogError("Copy failed: " + uwr.error);
+        }
+        else
+        {
+            File.WriteAllBytes(targetPath, uwr.downloadHandler.data);
+            Debug.Log("Copied: " + targetPath);
+        }
     }
 }

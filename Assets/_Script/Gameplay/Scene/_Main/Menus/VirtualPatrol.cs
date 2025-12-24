@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using TMPro;
@@ -177,7 +178,21 @@ public class VirtualPatrol : _MenuState
             vp.targetTexture = rt;
             raw.texture = rt;
 
-            vp.clip = data.opening;
+            vp.source = VideoSource.Url;
+            string path = Path.Combine(
+                Application.persistentDataPath,
+                "videos",
+                data.moduleFolder,
+                data.openingURL + ".mp4"
+            );
+
+            string fileUrl = "file://" + path.Replace("\\", "/");
+
+            vp.url = fileUrl;
+
+            vp.isLooping = true;
+            vp.Prepare();
+            vp.prepareCompleted += (VideoPlayer source) => source.Play();
 
             intrusionBTNInstance.transform.Find("CameraTXT").GetComponent<TMP_Text>().text = "CAM " + tempIntrusionIndex;
             intrusionBTNInstance.transform.Find("Group/GroupTXT").GetComponent<TMP_Text>().text = letters[tempIntrusionIndex - 1];
@@ -264,8 +279,9 @@ public class VirtualPatrol : _MenuState
 
         scenarioTitleTXT.text = currentIntrusionVideo.scenarioName;
 
-        FullScreenVP.clip = currentIntrusionVideo.opening;
-        FullScreenVP.Play();
+        PlayScenarioVideo(currentIntrusionVideo.moduleFolder, currentIntrusionVideo.openingURL);
+        //FullScreenVP.clip = currentIntrusionVideo.opening;
+        //FullScreenVP.Play();
         LeanTween.alphaCanvas(fullscreenVideoCG, 1f, 0.5f)
             .setEase(LeanTweenType.easeInOutSine)
             .setOnComplete(() =>
@@ -449,7 +465,19 @@ public class VirtualPatrol : _MenuState
 
         if (intrusionVideo != null)
         {
-            PopupVideoPlayer.clip = intrusionVideo.approach;
+            PopupVideoPlayer.source = VideoSource.Url;
+            string path = Path.Combine(
+                Application.persistentDataPath,
+                "videos",
+                intrusionVideo.moduleFolder,
+                intrusionVideo.approachURL + ".mp4"
+            );
+
+            string fileUrl = "file://" + path.Replace("\\", "/");
+            PopupVideoPlayer.url = fileUrl;
+            PopupVideoPlayer.Prepare();
+            PopupVideoPlayer.prepareCompleted += vp => vp.Play();
+
             PopupVideoPlayer.loopPointReached += OnApproachFinished;
 
             PopupVideoPlayer.isLooping = false;
@@ -461,6 +489,7 @@ public class VirtualPatrol : _MenuState
         }
         else
         {
+            PopupVideoPlayer.source = VideoSource.VideoClip;
             intrusionInProgress = false;
             PopupVideoPlayer.clip = popupVideoClip[index];
             currentIndex = index;
@@ -508,8 +537,9 @@ public class VirtualPatrol : _MenuState
 
         StopCamera();
 
-        FullScreenVP.clip = currentIntrusionVideo.solution;
-        FullScreenVP.Play();
+        PlayScenarioVideo(currentIntrusionVideo.moduleFolder, currentIntrusionVideo.solutionURL);
+        //FullScreenVP.clip = currentIntrusionVideo.solution;
+        //FullScreenVP.Play();
         LeanTween.alphaCanvas(fullscreenVideoCG, 1f, 0.5f)
             .setEase(LeanTweenType.easeInOutSine)
             .setOnComplete(() =>
@@ -655,4 +685,42 @@ public class VirtualPatrol : _MenuState
             }
         }
     }
+
+    void PlayScenarioVideo(string moduleFolder, string videoKey)
+    {
+        string fileName = videoKey; // "VideoA" / "VideoB" / "VideoC"
+
+        string path = Path.Combine(
+            Application.persistentDataPath,
+            "videos",
+            currentIntrusionVideo.moduleFolder,
+            fileName + ".mp4"
+        );
+
+        if (!File.Exists(path))
+        {
+            Debug.LogError("Video not found: " + path);
+            return;
+        }
+
+        string fileUrl = "file://" + path.Replace("\\", "/");
+
+        Debug.Log("VIDEO PATH: " + path);
+        Debug.Log("VIDEO URL : " + fileUrl);
+
+        FullScreenVP.source = VideoSource.Url;
+        FullScreenVP.url = fileUrl;
+        FullScreenVP.Prepare();
+
+        FullScreenVP.prepareCompleted -= OnPrepared;
+        FullScreenVP.prepareCompleted += OnPrepared;
+    }
+
+    void OnPrepared(VideoPlayer vp)
+    {
+        vp.prepareCompleted -= OnPrepared;
+        vp.Play();
+    }
+
+
 }

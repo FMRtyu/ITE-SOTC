@@ -26,6 +26,7 @@
 /[Aa]ssets/Plugins/Editor/JetBrains*
 # ignore video files
 /[Aa]ssets/_Texture/GUI/Video/
+/[Aa]ssets/StreamingAssets/Videos/
 
 # Visual Studio cache directory
 .vs/

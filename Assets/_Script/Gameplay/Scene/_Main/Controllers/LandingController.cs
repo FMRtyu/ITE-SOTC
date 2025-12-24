@@ -45,6 +45,7 @@ public class LandingController : MonoBehaviour
         LeanTween.cancel(fadeTweenId);
 
         SoundManager.Instance.PlaySFX("button_click");
+        StartCoroutine(GameManager.Instance.CreateDefaultVideos());
 
         // Play transition video
         LeanTween.scale(headerTexts, Vector3.zero, 0.5f).setOnComplete(() =>
