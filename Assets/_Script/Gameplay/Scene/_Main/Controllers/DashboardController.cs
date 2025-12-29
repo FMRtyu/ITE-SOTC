@@ -30,6 +30,9 @@ public class DashboardController : MonoBehaviour
 
     private void initDashboard()
     {
+
+        uiManager = GameManager.Instance.uIManager;
+        uiManager.InitDashboardData(this);
         //Put all menus into a dictionary
         foreach (_MenuState menu in allMenus)
         {
@@ -71,7 +74,7 @@ public class DashboardController : MonoBehaviour
     public void showCampusEventPanelOnly()
     {
         Home homeMenu = menuDictionary[MenuState.Home] as Home;
-        homeMenu.ShowCampusEventOnly();
+        homeMenu.SetCampusEventData();
     }
 
     public bool CheckScenarioInProgress()

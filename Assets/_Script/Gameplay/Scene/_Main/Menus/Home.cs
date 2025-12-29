@@ -8,7 +8,6 @@ public class Home : _MenuState
     [SerializeField] private Sprite menuBG;
     [SerializeField] private Animator PieChartAnimator;
     [Header("Campus Event Panel")]
-    [SerializeField] private GameObject campusEventPanel;
     [SerializeField] private GameObject campusContentPrefab;
     [SerializeField] private GameObject campusContentParent;
     private List<GameObject> campusEventContents = new List<GameObject>();
@@ -80,18 +79,7 @@ public class Home : _MenuState
         uiManager.ChangeBackground(menuBG);
     }
 
-    public void ShowCampusEventOnly()
-    {
-        // Enable campus event panel
-        campusEventPanel.SetActive(true);
-        LeanTween.alphaCanvas(campusEventPanel.GetComponent<CanvasGroup>(), 1f, 0.5f).setDelay(3f).setOnComplete(() =>
-        {
-            SetCampusEventData();
-        });
-
-    }
-
-    private void SetCampusEventData()
+    public void SetCampusEventData()
     {
         foreach (GameObject eventPanel in campusEventContents)
         {

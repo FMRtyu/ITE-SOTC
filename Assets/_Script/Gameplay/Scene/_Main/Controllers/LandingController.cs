@@ -37,6 +37,8 @@ public class LandingController : MonoBehaviour
 
         // Begin click to start fade loop
         FadeOutButton();
+
+        uiManager.PopOutFade();
     }
     #region Video Callbacks
     public void OnClickToStart()
@@ -44,8 +46,10 @@ public class LandingController : MonoBehaviour
         // Stop the button fade loop
         LeanTween.cancel(fadeTweenId);
 
+        uiManager.initUIManager();
         SoundManager.Instance.PlaySFX("button_click");
         StartCoroutine(GameManager.Instance.CreateDefaultVideos());
+        GameManager.Instance.InitializeCampusEventData();
 
         // Play transition video
         LeanTween.scale(headerTexts, Vector3.zero, 0.5f).setOnComplete(() =>
@@ -62,10 +66,10 @@ public class LandingController : MonoBehaviour
         vp.loopPointReached -= OnTransitionVideoEnd;
         landingVideoBackground.clip = homeTransitionVideoClip;
 
-        uiManager.ShowDashboardCampusEvent();
-
         landingVideoBackground.Play();
         landingVideoBackground.loopPointReached += OnHomeTransitionVideoEnd;
+
+        uiManager.loadDashboardScene();
 
     }
 

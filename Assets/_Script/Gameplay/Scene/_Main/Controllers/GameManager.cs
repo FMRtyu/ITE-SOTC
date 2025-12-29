@@ -28,15 +28,13 @@ public class GameManager : MonoBehaviourSingletonPersistent<GameManager>
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
-
-        campusEventJsonURL = Path.Combine(Application.persistentDataPath, "Event_Summary.json");
         //LoadOrCreateJson();
         //StartCoroutine(CreateDefaultVideos());
     }
 
     private async void Start()
     {
-        await LoadCampusEventDataAsync(campusEventJsonURL);
+        //await LoadCampusEventDataAsync(campusEventJsonURL);
 
         var events = CampusEvents;
 
@@ -53,6 +51,12 @@ public class GameManager : MonoBehaviourSingletonPersistent<GameManager>
     /// <summary>
     /// Fetches and stores campus event data from the given JSON URL.
     /// </summary>
+    
+    public async void InitializeCampusEventData()
+    {
+        campusEventJsonURL = Path.Combine(Application.persistentDataPath, "Event_Summary.json");
+        await LoadCampusEventDataAsync(campusEventJsonURL);
+    }
     public async Task LoadCampusEventDataAsync(string url)
     {
         if (!File.Exists(url))

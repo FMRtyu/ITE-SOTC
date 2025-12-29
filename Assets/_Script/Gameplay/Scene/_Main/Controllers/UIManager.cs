@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 public class UIManager : MonoBehaviour
 {
@@ -11,7 +13,7 @@ public class UIManager : MonoBehaviour
     [Header("Pages")]
     [SerializeField] private LandingController landingPage;
     private CanvasGroup landingCanvasGroup;
-    [SerializeField] private DashboardController dashboardPage;
+    private DashboardController dashboardPage;
     private CanvasGroup dashboardCanvasGroup;
 
     [Header("HUD Elements")]
@@ -28,6 +30,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TMP_Text minuteText;
     [SerializeField] private TMP_Text secondText;
     [SerializeField] private TMP_Text dateText;
+
     [Header("Navigation elements")]
     [SerializeField] private GameObject smartbuildButton;
     [SerializeField] private GameObject sustainabilityButton;
@@ -35,6 +38,18 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject GPSTrackingButton;
     [SerializeField] private GameObject alarmMonitoringButton;
     [SerializeField] private GameObject virtualPatrolButton;
+
+    [Header("loadingUI")]
+    [SerializeField] private CanvasGroup loadingCanvasGroup;
+    [SerializeField] private Slider loadingSlider;
+
+    [Header("Virtual Patrol Elements")]
+    public CanvasGroup pinPointCG;
+    public CanvasGroup virtualBGCG;
+    public CanvasGroup popupBlackBGCG;
+    public VideoPlayer popupVideoPlayer;
+    
+
     private bool isShowing = false;
 
     private int changingID = -1;
@@ -46,17 +61,35 @@ public class UIManager : MonoBehaviour
     [Header("debug")]
     [SerializeField] private bool skipLanding = false;
 
-    [SerializeField] private GameObject designReference;
-
     //var
     private DateTime today;
 
     private Sprite defaultBG;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+
+    public void initUIManager()
     {
-        initUIElement();
+        today = DateTime.Now;
+        landingCanvasGroup = landingPage.GetComponent<CanvasGroup>();
+        // Format: 6th October 2025 Friday
+        string formatted =
+    today.ToString("dddd, d MMMM").ToUpper()
+    + $" <font=\"Oswald-Medium SDF\"><size=21>{today:yyyy}</size></font>";
+
+        dateText.text = formatted;
+
+        if (skipLanding)
+        {
+            ShowDashboard();
+        }
+        else
+        {
+            HUD.alpha = 0f;
+            HUD.interactable = false;
+            HUD.blocksRaycasts = false;
+        }
+        StartCoroutine(UpdateTime());
 
         navGroup.Add(smartbuildButton);
         navGroup.Add(sustainabilityButton);
@@ -67,40 +100,14 @@ public class UIManager : MonoBehaviour
 
         activeBTN(HomeButton);
 
-        designReference.SetActive(false);
-
         defaultBG = backgroundCG.GetComponent<Image>().sprite;
+
     }
 
-    private void initUIElement()
+    public void InitDashboardData(DashboardController dashboard)
     {
-        today = DateTime.Now;
-        landingCanvasGroup = landingPage.GetComponent<CanvasGroup>();
+        dashboardPage = dashboard;
         dashboardCanvasGroup = dashboardPage.GetComponent<CanvasGroup>();
-        // Format: 6th October 2025 Friday
-        string formatted =
-    today.ToString("dddd, d MMMM").ToUpper()
-    + $" <font=\"Oswald-Medium SDF\"><size=21>{today:yyyy}</size></font>";
-
-        dateText.text = formatted;
-
-        if (skipLanding)
-        {
-            ShowDashboardCampusEvent();
-            ShowDashboard();
-        }
-        else
-        {
-            HUD.alpha = 0f;
-            HUD.interactable = false;
-            HUD.blocksRaycasts = false;
-
-            dashboardCanvasGroup.interactable = false;
-            dashboardCanvasGroup.blocksRaycasts = false;
-        }
-        PopOutFade();
-        StartCoroutine(UpdateTime());
-
     }
 
     IEnumerator UpdateTime()
@@ -188,27 +195,19 @@ public class UIManager : MonoBehaviour
     }
 
     public void deactiveBTN(GameObject btn)
-{
-    if (btn.transform.childCount >= 2)
     {
-        btn.transform.GetChild(0).gameObject.SetActive(false);
-        btn.transform.GetChild(1).gameObject.SetActive(true);
-    }
-}
-
-    public void ShowDashboardCampusEvent()
-    {
-        LeanTween.delayedCall(1f, () =>
+        if (btn.transform.childCount >= 2)
         {
-            dashboardPage.showCampusEventPanelOnly();
-        });
-
+            btn.transform.GetChild(0).gameObject.SetActive(false);
+            btn.transform.GetChild(1).gameObject.SetActive(true);
+        }
     }
 
     public void ShowDashboard()
     {
         dashboardCanvasGroup.interactable = true;
         dashboardCanvasGroup.blocksRaycasts = true;
+        dashboardPage.showCampusEventPanelOnly();
         dashboardPage.ShowAllHomeChildren();
         HUD.alpha = 1f;
         HUD.interactable = true;
@@ -250,13 +249,6 @@ public class UIManager : MonoBehaviour
             changingID = LeanTween.alphaCanvas(backgroundCG, 1f, 1f).id;
         }).id;
         }
-    }
-    string AddOrdinal(int day)
-    {
-        if (day % 10 == 1 && day != 11) return day + "st";
-        if (day % 10 == 2 && day != 12) return day + "nd";
-        if (day % 10 == 3 && day != 13) return day + "rd";
-        return day + "th";
     }
 
     public void toggleBGM()
@@ -304,6 +296,47 @@ public class UIManager : MonoBehaviour
                 blackBG[i].SetActive(false);
             }
         }
+    }
+
+    public void loadDashboardScene()
+    {
+        LeanTween.alphaCanvas(loadingCanvasGroup, 1f, 0.5f).setOnComplete(() =>
+        {
+            StartCoroutine(LoadGameplayRoutine());
+        });
+    }
+
+    IEnumerator LoadGameplayRoutine()
+    {
+        // Reset slider
+        loadingSlider.value = 0f;
+
+        // 🔑 KASIH WAKTU UI & LEANTWEEN RENDER
+        yield return null;
+        yield return null;
+
+        // Load scene async (Additive supaya loading scene tetap hidup)
+        AsyncOperation op = SceneManager.LoadSceneAsync(
+            "_Main",
+            LoadSceneMode.Additive
+        );
+        op.allowSceneActivation = false;
+
+        while (op.progress < 0.9f)
+        {
+            float progress = Mathf.Clamp01(op.progress / 0.9f);
+            loadingSlider.value = progress;
+            yield return null;
+        }
+
+        loadingSlider.value = 1f;
+
+        op.allowSceneActivation = true;
+
+        yield return null;
+
+        // Fade OUT setelah scene aktif
+        LeanTween.alphaCanvas(loadingCanvasGroup, 0f, 0.5f);
     }
 
     #region Fade Controls

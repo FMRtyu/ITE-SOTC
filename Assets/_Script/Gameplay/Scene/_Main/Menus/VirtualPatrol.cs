@@ -25,16 +25,6 @@ public class VirtualPatrol : _MenuState
     [SerializeField] private Sprite[] popupPlaceholder;
     [SerializeField] private IntrusionVideo[] intrusionData;
 
-    [Header("Assign Staff UI")]
-    [SerializeField] private CanvasGroup assignBG;
-    [SerializeField] private TMP_Text assignTXT;
-    [SerializeField] private CanvasGroup assignBlue;
-    [SerializeField] private CanvasGroup assignRed;
-
-    private int assignPanelTweenId = -1;
-    private int assignBGTweenId = -1;
-
-
     [Header("UI Element")]
     [SerializeField] private CanvasGroup pinPoint;
     [SerializeField] private CanvasGroup virtualBackgroundGroup;
@@ -120,6 +110,12 @@ public class VirtualPatrol : _MenuState
 
     void initVirtualPatrolAwake()
     {
+        uiManager = GameManager.Instance.uIManager;
+        PopupVideoPlayer = uiManager.popupVideoPlayer;
+        pinPoint = uiManager.pinPointCG;
+        virtualBackgroundGroup = uiManager.virtualBGCG;
+        blackBGOverlay = uiManager.popupBlackBGCG;
+
         PopupVideoCG = PopupVideoPlayer.GetComponent<CanvasGroup>();
 
         PopupVideoCG.alpha = 0f;
