@@ -28,6 +28,8 @@ public class LandingController : MonoBehaviour
 
     private void initlandingpage()
     {
+        GameManager.Instance.CheckDefaultVideos();
+        
         //play background video
         landingVideoBackground.clip = landingVideoClip;
         landingVideoBackground.Play();
@@ -48,7 +50,6 @@ public class LandingController : MonoBehaviour
 
         uiManager.initUIManager();
         SoundManager.Instance.PlaySFX("button_click");
-        StartCoroutine(GameManager.Instance.CreateDefaultVideos());
         GameManager.Instance.InitializeCampusEventData();
 
         // Play transition video

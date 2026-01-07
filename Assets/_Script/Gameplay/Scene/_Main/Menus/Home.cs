@@ -23,7 +23,8 @@ public class Home : _MenuState
 
     void Start()
     {
-        HideAllChildren();
+        if (!uiManager.skipLanding)
+            HideAllChildren();
 
         initHome();
     }

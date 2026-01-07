@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Video;
@@ -48,7 +49,7 @@ public class UIManager : MonoBehaviour
     public CanvasGroup virtualBGCG;
     public CanvasGroup popupBlackBGCG;
     public VideoPlayer popupVideoPlayer;
-    
+
 
     private bool isShowing = false;
 
@@ -59,7 +60,7 @@ public class UIManager : MonoBehaviour
     private List<GameObject> navGroup = new List<GameObject>();
 
     [Header("debug")]
-    [SerializeField] private bool skipLanding = false;
+    public bool skipLanding = false;
 
     //var
     private DateTime today;
@@ -68,6 +69,16 @@ public class UIManager : MonoBehaviour
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
+    void Start()
+    {
+        if (skipLanding)
+        {
+            //ShowDashboard();
+            initUIManager();
+            GameManager.Instance.InitializeCampusEventData();
+            loadDashboardScene();
+        }
+    }
     public void initUIManager()
     {
         today = DateTime.Now;
@@ -79,16 +90,10 @@ public class UIManager : MonoBehaviour
 
         dateText.text = formatted;
 
-        if (skipLanding)
-        {
-            ShowDashboard();
-        }
-        else
-        {
-            HUD.alpha = 0f;
-            HUD.interactable = false;
-            HUD.blocksRaycasts = false;
-        }
+
+        HUD.alpha = 0f;
+        HUD.interactable = false;
+        HUD.blocksRaycasts = false;
         StartCoroutine(UpdateTime());
 
         navGroup.Add(smartbuildButton);
@@ -98,7 +103,7 @@ public class UIManager : MonoBehaviour
         navGroup.Add(alarmMonitoringButton);
         navGroup.Add(virtualPatrolButton);
 
-        activeBTN(HomeButton);
+        activeNavBTN(HomeButton);
 
         defaultBG = backgroundCG.GetComponent<Image>().sprite;
 
@@ -128,6 +133,7 @@ public class UIManager : MonoBehaviour
     {
         if (isChangingMenu || dashboardPage.CheckScenarioInProgress())
         {
+            EventSystem.current.SetSelectedGameObject(null);
             return;
         }
         MenuState selectedMenu = MenuState.Home;
@@ -164,7 +170,7 @@ public class UIManager : MonoBehaviour
         {
             Debug.Log("Changing Menu to: " + selectedMenu.ToString());
             dashboardPage.SetActiveState(selectedMenu);
-            activeBTN(selectedNavButton);
+            activeNavBTN(selectedNavButton);
             SoundManager.Instance.PlaySFX("button_click");
             delayChangeMenu();
         }
@@ -180,7 +186,7 @@ public class UIManager : MonoBehaviour
         });
     }
 
-    public void activeBTN(GameObject btn)
+    public void activeNavBTN(GameObject btn)
     {
         foreach (GameObject item in navGroup)
         {
@@ -221,6 +227,7 @@ public class UIManager : MonoBehaviour
             //toggleBGM(false);
             SoundManager.Instance.PlaySFX("MenuOpen");
             SoundManager.Instance.SetVolume(0.02f, "theEpic", 1f);
+            dashboardPage.CheckVideoIncident();
         });
 
     }

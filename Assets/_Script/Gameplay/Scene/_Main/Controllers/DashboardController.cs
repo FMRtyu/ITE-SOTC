@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,6 +24,17 @@ public class DashboardController : MonoBehaviour
     [SerializeField] private UIManager uiManager;
 
     public MenuState currentMenuState = MenuState.Home;
+
+    [SerializeField] private GameObject[] referenceObjects;
+
+    [Header("video errors panel")]
+    [SerializeField] private CanvasGroup videoErrorPanel;
+    [SerializeField] private TMP_Text videoErrorText;
+    [SerializeField] private Button defaultVideoButton;
+    [SerializeField] private Button openVideoFolderButton;
+    [SerializeField] private Button closeVideoErrorPanelButton;
+    [SerializeField] private Button HUDOpenVideoPanelButton;
+
     void Start()
     {
         initDashboard();
@@ -30,9 +42,61 @@ public class DashboardController : MonoBehaviour
 
     private void initDashboard()
     {
+        //init video error panel
+        videoErrorPanel.alpha = 0;
+        videoErrorPanel.interactable = false;
+        videoErrorPanel.blocksRaycasts = false;
 
+        defaultVideoButton.onClick.AddListener(() =>
+        {
+            StartCoroutine(GameManager.Instance.CreateDefaultIncidentVideos());
+            LeanTween.alphaCanvas(videoErrorPanel, 0, 0.5f).setOnComplete(() =>
+            {
+                videoErrorPanel.interactable = false;
+                videoErrorPanel.blocksRaycasts = false;
+            });
+        });
+
+        openVideoFolderButton.onClick.AddListener(() =>
+        {
+            GameManager.Instance.OpenVideoFolder();
+        });
+
+        closeVideoErrorPanelButton.onClick.AddListener(() =>
+        {
+            LeanTween.alphaCanvas(videoErrorPanel, 0, 0.5f).setOnComplete(() =>
+            {
+                videoErrorPanel.interactable = false;
+                videoErrorPanel.blocksRaycasts = false;
+            });
+        });
+
+        foreach (GameObject obj in referenceObjects)
+        {
+            obj.SetActive(false);
+        }
+
+        //Get reference to UIManager
         uiManager = GameManager.Instance.uIManager;
         uiManager.InitDashboardData(this);
+
+        HUDOpenVideoPanelButton.onClick.AddListener(() =>
+        {
+            GameManager.Instance.CheckDefaultVideos();
+            if (GameManager.Instance.isVideoHaveError)
+            {
+                SetErrorVideoText();
+            }
+            else
+            {
+                videoErrorText.text = "<color=white>No video errors found.";
+            }
+            LeanTween.alphaCanvas(videoErrorPanel, 1, 0.5f).setOnComplete(() =>
+            {
+                videoErrorPanel.interactable = true;
+                videoErrorPanel.blocksRaycasts = true;
+            });
+        });
         //Put all menus into a dictionary
         foreach (_MenuState menu in allMenus)
         {
@@ -63,6 +127,38 @@ public class DashboardController : MonoBehaviour
 
         //Activate the default menu
         SetActiveState(MenuState.Home);
+        if (uiManager.skipLanding)
+        {
+            uiManager.ShowDashboard();
+            ShowAllHomeChildren();
+        }
+
+    }
+
+    void SetErrorVideoText()
+    {
+        videoErrorText.text = "The following video errors were found:\n";
+        foreach (string error in GameManager.Instance.videoErrors)
+        {
+            videoErrorText.text += "- " + error + "\n";
+        }
+    }
+
+    public void CheckVideoIncident()
+    {
+        if (GameManager.Instance.isVideoHaveError)
+        {
+            SetErrorVideoText();
+            LeanTween.alphaCanvas(videoErrorPanel, 1, 0.5f).setOnComplete(() =>
+            {
+                videoErrorPanel.interactable = true;
+                videoErrorPanel.blocksRaycasts = true;
+            });
+        }
+        else
+        {
+            videoErrorText.text = "<color=white>No video errors found.";
+        }
     }
 
     // Update is called once per frame
@@ -80,11 +176,12 @@ public class DashboardController : MonoBehaviour
     public bool CheckScenarioInProgress()
     {
         VirtualPatrol homeMenu = menuDictionary[MenuState.VirtualPatrol] as VirtualPatrol;
-        
-        if(currentMenuState == MenuState.VirtualPatrol && homeMenu.intrusionInProgress)
+
+        if (currentMenuState == MenuState.VirtualPatrol && homeMenu.intrusionInProgress)
         {
             return true;
-        }else
+        }
+        else
         {
             return false;
         }

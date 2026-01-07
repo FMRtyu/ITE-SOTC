@@ -1,5 +1,8 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -18,6 +21,14 @@ public class GameManager : MonoBehaviourSingletonPersistent<GameManager>
     //load or create new json
     //public CampusEventData[] eventsData;
     private string campusEventJsonURL;
+
+    public bool isVideoHaveError = false;
+    public List<string> videoErrors = new List<string>();
+
+    private readonly string[] modules =
+    {
+    "module1", "module2", "module3", "module4", "module5"
+};
 
     private void Awake()
     {
@@ -51,10 +62,10 @@ public class GameManager : MonoBehaviourSingletonPersistent<GameManager>
     /// <summary>
     /// Fetches and stores campus event data from the given JSON URL.
     /// </summary>
-    
+
     public async void InitializeCampusEventData()
     {
-        campusEventJsonURL = Path.Combine(Application.persistentDataPath, "Event_Summary.json");
+        campusEventJsonURL = Path.Combine(Application.persistentDataPath, "EventSummary.json");
         await LoadCampusEventDataAsync(campusEventJsonURL);
     }
     public async Task LoadCampusEventDataAsync(string url)
@@ -79,10 +90,12 @@ public class GameManager : MonoBehaviourSingletonPersistent<GameManager>
 
         //delete old json
         string oldCampusEventJsonURL = Path.Combine(Application.persistentDataPath, "crowd_data.json");
+        string oldCampusEventJsonURL2 = Path.Combine(Application.persistentDataPath, "Event_Summary.json");
 
         if (File.Exists(oldCampusEventJsonURL))
         {
             File.Delete(oldCampusEventJsonURL);
+            File.Delete(oldCampusEventJsonURL2);
         }
     }
 
@@ -153,14 +166,14 @@ public class GameManager : MonoBehaviourSingletonPersistent<GameManager>
         string defaultJson = @"
         [
           {
-            ""event"": ""CCA FAIR 2025"",
+            ""event"": ""CCA FAIR 2026"",
             ""venue"": ""FOYER"",
             ""time"": ""1200-1400"",
             ""crowd_size"": ""1200 PAX"",
             ""current_status"": ""LOW""
           },
           {
-            ""event"": ""ORIENTATION 2025"",
+            ""event"": ""ORIENTATION 2026"",
             ""venue"": ""TES HALL"",
             ""time"": ""0900-1700"",
             ""crowd_size"": ""500 PAX"",
@@ -172,48 +185,155 @@ public class GameManager : MonoBehaviourSingletonPersistent<GameManager>
         Debug.Log("Default JSON created at: " + campusEventJsonURL);
     }
 
-    public IEnumerator CreateDefaultVideos()
+    // public IEnumerator CreateDefaultVideos()
+    // {
+    //     string sourceRoot = Path.Combine(Application.streamingAssetsPath, "videos");
+    //     string targetRoot = Path.Combine(Application.persistentDataPath, "videos");
+
+    //     Directory.CreateDirectory(targetRoot);
+
+    //     string[] modules = { "module1", "module2", "module3", "module4", "module5" };
+
+    //     foreach (string module in modules)
+    //     {
+    //         string sourceModule = Path.Combine(sourceRoot, module);
+    //         string targetModule = Path.Combine(targetRoot, module);
+
+    //         if (!Directory.Exists(targetModule))
+    //         {
+    //             Directory.CreateDirectory(targetModule);
+    //         }
+
+    //         if (!Directory.Exists(sourceModule))
+    //             continue;
+
+    //         foreach (string file in Directory.GetFiles(sourceModule, "*.mp4"))
+    //         {
+    //             string fileName = Path.GetFileName(file);
+    //             string targetFile = Path.Combine(targetModule, fileName);
+
+    //             if (File.Exists(targetFile))
+    //                 continue;
+
+    //             yield return CopyFile(file, targetFile);
+    //         }
+
+    //         // Copy README.txt (once)
+    //         string readmeSource = Path.Combine(sourceRoot, "README.txt");
+    //         string readmeTarget = Path.Combine(targetRoot, "README.txt");
+
+    //         if (File.Exists(readmeSource) && !File.Exists(readmeTarget))
+    //         {
+    //             yield return CopyFile(readmeSource, readmeTarget);
+    //         }
+    //     }
+    // }
+
+
+    public void CheckDefaultVideos()
     {
+        Debug.Log("Checking default videos...");
+        videoErrors.Clear();
+        isVideoHaveError = false;
+
+        string targetRoot = Path.Combine(Application.persistentDataPath, "videos");
+
+        if (!Directory.Exists(targetRoot))
+        {
+            Directory.CreateDirectory(targetRoot);
+        }
+
+        foreach (string module in modules)
+        {
+            string modulePath = Path.Combine(targetRoot, module);
+
+            if (!Directory.Exists(modulePath))
+            {
+                videoErrors.Add($"Missing folder: {module}");
+                continue;
+            }
+            Debug.Log("Checking module: " + module);
+
+            string[] requiredVideos =
+{
+    "VideoA.mp4",
+    "VideoB.mp4",
+    "VideoC.mp4"
+};
+
+            bool hasAllRequiredVideos = requiredVideos.All(video =>
+    File.Exists(Path.Combine(modulePath, video))
+);
+
+            if (!hasAllRequiredVideos)
+            {
+                videoErrors.Add(
+                    $"Missing required videos in: {module} (VideoA/B/C.mp4 required)"
+                );
+            }
+        }
+
+        isVideoHaveError = videoErrors.Count > 0;
+    }
+
+    public IEnumerator CreateDefaultIncidentVideos()
+    {
+        videoErrors.Clear();
+        isVideoHaveError = false;
+
         string sourceRoot = Path.Combine(Application.streamingAssetsPath, "videos");
         string targetRoot = Path.Combine(Application.persistentDataPath, "videos");
 
         Directory.CreateDirectory(targetRoot);
-
-        string[] modules = { "module1", "module2", "module3", "module4", "module5" };
 
         foreach (string module in modules)
         {
             string sourceModule = Path.Combine(sourceRoot, module);
             string targetModule = Path.Combine(targetRoot, module);
 
-            if (!Directory.Exists(targetModule))
+            if (!Directory.Exists(sourceModule))
             {
-                Directory.CreateDirectory(targetModule);
+                videoErrors.Add($"Source module missing: {module}");
+                continue;
             }
 
-            if (!Directory.Exists(sourceModule))
-                continue;
+            Directory.CreateDirectory(targetModule);
 
             foreach (string file in Directory.GetFiles(sourceModule, "*.mp4"))
             {
-                string fileName = Path.GetFileName(file);
-                string targetFile = Path.Combine(targetModule, fileName);
+                string targetFile = Path.Combine(targetModule, Path.GetFileName(file));
 
-                if (File.Exists(targetFile))
-                    continue;
+                // if (File.Exists(targetFile))
+                //     continue;
 
                 yield return CopyFile(file, targetFile);
             }
-
-            // Copy README.txt (once)
-            string readmeSource = Path.Combine(sourceRoot, "README.txt");
-            string readmeTarget = Path.Combine(targetRoot, "README.txt");
-
-            if (File.Exists(readmeSource) && !File.Exists(readmeTarget))
-            {
-                yield return CopyFile(readmeSource, readmeTarget);
-            }
         }
+
+        isVideoHaveError = videoErrors.Count > 0;
+    }
+
+    public void OpenVideoFolder()
+    {
+        videoErrors.Clear();
+        isVideoHaveError = false;
+
+        string path = Path.Combine(Application.persistentDataPath, "videos");
+
+        if (!Directory.Exists(path))
+        {
+            videoErrors.Add("Video folder does not exist.");
+            isVideoHaveError = true;
+            return;
+        }
+
+        var psi = new System.Diagnostics.ProcessStartInfo
+        {
+            FileName = path,
+            UseShellExecute = true
+        };
+
+        System.Diagnostics.Process.Start(psi);
     }
 
     IEnumerator CopyFile(string sourcePath, string targetPath)
@@ -223,7 +343,11 @@ public class GameManager : MonoBehaviourSingletonPersistent<GameManager>
 
         if (uwr.result != UnityWebRequest.Result.Success)
         {
-            Debug.LogError("Copy failed: " + uwr.error);
+            string msg = $"Copy failed: {Path.GetFileName(sourcePath)} | {uwr.error}";
+            Debug.LogError(msg);
+
+            videoErrors.Add(msg);
+            isVideoHaveError = true;
         }
         else
         {

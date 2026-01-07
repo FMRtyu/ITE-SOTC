@@ -65,7 +65,7 @@ public class VirtualPatrol : _MenuState
 
     void Start()
     {
-        initVirtualPatrol();
+        initIncidentVideo();
     }
 
     void OnEnable()
@@ -159,7 +159,7 @@ public class VirtualPatrol : _MenuState
         // }
     }
 
-    void initVirtualPatrol()
+    void initIncidentVideo()
     {
         int tempIntrusionIndex = 1;
         foreach (IntrusionVideo data in intrusionData)
@@ -227,19 +227,20 @@ public class VirtualPatrol : _MenuState
         if (uiManager.isplayingBGM)
             SoundManager.Instance.SetVolume(0.01f, "theEpic", 1f);
 
-        if (index != currentIndex)
-        {
-            if (!isPlayingPopup)
-                PlayPopupCamera(index);
-            else
-                SwitchCamera(index);
-        }
-        else
+        if (index == currentIndex && isPlayingPopup)
         {
             StopCamera();
+
             if (uiManager.isplayingBGM)
                 SoundManager.Instance.SetVolume(0.02f, "theEpic", 1f);
+
+            return;
         }
+
+        if (!isPlayingPopup)
+            PlayPopupCamera(index);
+        else
+            SwitchCamera(index);
     }
 
     // public void PlayPopupScenario(string scenarioName)
@@ -437,20 +438,14 @@ public class VirtualPatrol : _MenuState
             .setEase(LeanTweenType.easeInOutSine)
             .setOnComplete(() =>
             {
-                //placeholder for now
-                //PopupVideoPlayer.clip = popupVideoClip[index];
-                //currentIndex = index;
-                //PopupVideoPlayer.Play();
-                Image tempPlaceholder = PopupVideoPlayer.transform.Find("PlaceholderIMG").GetComponent<Image>();
-                tempPlaceholder.sprite = popupPlaceholder[index];
+                PopupVideoPlayer.clip = popupVideoClip[index];
+                currentIndex = index;
+                PopupVideoPlayer.Play();
+                //placeholder
+                //Image tempPlaceholder = PopupVideoPlayer.transform.Find("PlaceholderIMG").GetComponent<Image>();
+                //tempPlaceholder.sprite = popupPlaceholder[index];
 
-                LeanTween.alphaCanvas(PopupVideoCG, 1f, 0.3f)
-                    .setEase(LeanTweenType.easeInOutSine)
-                    .setOnComplete(() =>
-                    {
-                        PopupVideoCG.interactable = true;
-                        PopupVideoCG.blocksRaycasts = true;
-                    });
+                LeanTween.alphaCanvas(PopupVideoCG, 1f, 0.3f).setEase(LeanTweenType.easeInOutSine);
             });
     }
 
@@ -478,9 +473,9 @@ public class VirtualPatrol : _MenuState
 
             PopupVideoPlayer.isLooping = false;
 
-            tempPlaceholder.gameObject.SetActive(false);
+            //tempPlaceholder.gameObject.SetActive(false);
             //placeholder for now
-            PopupVideoPlayer.Play();
+            //PopupVideoPlayer.Play();
             isPlayingPopup = true;
         }
         else
@@ -490,16 +485,17 @@ public class VirtualPatrol : _MenuState
             PopupVideoPlayer.clip = popupVideoClip[index];
             currentIndex = index;
             PopupVideoPlayer.isLooping = true;
+            isPlayingPopup = true;
 
             //placeholder for now
-            tempPlaceholder.gameObject.SetActive(true);
-            tempPlaceholder.sprite = popupPlaceholder[index];
+            //tempPlaceholder.gameObject.SetActive(true);
+            //tempPlaceholder.sprite = popupPlaceholder[index];
         }
 
+        PopupVideoPlayer.Play();
         if (blackBGOverlay.alpha < 1f)
             blackBGOverlayId = LeanTween.alphaCanvas(blackBGOverlay, 1f, blackBGOverlayeDuration)
                 .setEase(LeanTweenType.easeInOutSine).id;
-
         LeanTween.alphaCanvas(PopupVideoCG, 1f, blackBGOverlayeDuration)
             .setEase(LeanTweenType.easeInOutSine)
             .setOnComplete(() =>
