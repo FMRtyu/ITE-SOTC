@@ -1,4 +1,6 @@
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Video;
 
 public class LandingController : MonoBehaviour
@@ -17,6 +19,16 @@ public class LandingController : MonoBehaviour
     [SerializeField] private VideoClip transitionVideoClip;
     [SerializeField] private VideoClip homeTransitionVideoClip;
 
+    [Header("video errors panel")]
+    [SerializeField] private CanvasGroup videoErrorPanel;
+    [SerializeField] private TMP_Text videoErrorText;
+    [SerializeField] private Button defaultVideoButton;
+    [SerializeField] private Button openVideoFolderButton;
+    [SerializeField] private Button closeVideoErrorPanelButton;
+    [SerializeField] private Button HUDOpenVideoPanelButton;
+    [SerializeField] private Button HUDOpenButtonConfirmation;
+    private int confirmationCount = 0;
+
     //variables
     private int fadeTweenId = -1;
 
@@ -28,8 +40,8 @@ public class LandingController : MonoBehaviour
 
     private void initlandingpage()
     {
-        GameManager.Instance.CheckDefaultVideos();
-        
+        //GameManager.Instance.CheckDefaultVideos();
+
         //play background video
         landingVideoBackground.clip = landingVideoClip;
         landingVideoBackground.Play();
@@ -41,6 +53,98 @@ public class LandingController : MonoBehaviour
         FadeOutButton();
 
         uiManager.PopOutFade();
+
+        //init video error panel
+        videoErrorPanel.alpha = 0;
+        videoErrorPanel.interactable = false;
+        videoErrorPanel.blocksRaycasts = false;
+
+        string CURRENT_VERSION = Application.version;
+        string LAST_VERSION = PlayerPrefs.GetString("LAST_APP_VERSION", "");
+
+        bool isFirstInstall = string.IsNullOrEmpty(LAST_VERSION);
+        bool isVersionChanged = LAST_VERSION != CURRENT_VERSION;
+
+        if (isFirstInstall || isVersionChanged)
+        {
+            StartCoroutine(GameManager.Instance.CreateDefaultIncidentVideos());
+            PlayerPrefs.SetString("LAST_APP_VERSION", CURRENT_VERSION);
+            PlayerPrefs.Save();
+            Debug.Log("First install or version changed. Created default incident videos.");
+        }else
+        {
+            CheckVideoIncident();
+        }
+
+        defaultVideoButton.onClick.AddListener(() =>
+        {
+            StartCoroutine(GameManager.Instance.CreateDefaultIncidentVideos());
+            LeanTween.alphaCanvas(videoErrorPanel, 0, 0.5f).setOnComplete(() =>
+            {
+                videoErrorPanel.interactable = false;
+                videoErrorPanel.blocksRaycasts = false;
+
+                HUDOpenVideoPanelButton.gameObject.SetActive(false);
+                HUDOpenButtonConfirmation.gameObject.SetActive(true);
+            });
+        });
+
+        openVideoFolderButton.onClick.AddListener(() =>
+        {
+            GameManager.Instance.OpenVideoFolder();
+
+            LeanTween.alphaCanvas(videoErrorPanel, 0, 0.5f).setOnComplete(() =>
+            {
+                videoErrorPanel.interactable = false;
+                videoErrorPanel.blocksRaycasts = false;
+
+                HUDOpenVideoPanelButton.gameObject.SetActive(false);
+                HUDOpenButtonConfirmation.gameObject.SetActive(true);
+            });
+        });
+
+        closeVideoErrorPanelButton.onClick.AddListener(() =>
+        {
+            LeanTween.alphaCanvas(videoErrorPanel, 0, 0.5f).setOnComplete(() =>
+            {
+                videoErrorPanel.interactable = false;
+                videoErrorPanel.blocksRaycasts = false;
+
+                HUDOpenVideoPanelButton.gameObject.SetActive(false);
+                HUDOpenButtonConfirmation.gameObject.SetActive(true);
+            });
+        });
+
+        // HUDOpenVideoPanelButton.onClick.AddListener(() =>
+        // {
+        //     GameManager.Instance.CheckDefaultVideos();
+        //     if (GameManager.Instance.isVideoHaveError)
+        //     {
+        //         SetErrorVideoText();
+        //     }
+        //     else
+        //     {
+        //         videoErrorText.text = "<color=white>No video errors found.";
+        //     }
+        //     LeanTween.alphaCanvas(videoErrorPanel, 1, 0.5f).setOnComplete(() =>
+        //     {
+        //         videoErrorPanel.interactable = true;
+        //         videoErrorPanel.blocksRaycasts = true;
+
+        //         confirmationCount = 0;
+        //     });
+        // });
+
+        HUDOpenVideoPanelButton.onClick.AddListener(() =>
+        {
+            GameManager.Instance.OpenVideoFolder();
+
+            HUDOpenVideoPanelButton.gameObject.SetActive(false);
+            HUDOpenButtonConfirmation.gameObject.SetActive(true);
+            confirmationCount = 0;
+        });
+
+        GameManager.Instance.CheckDefaultVideos();
     }
     #region Video Callbacks
     public void OnClickToStart()
@@ -71,7 +175,6 @@ public class LandingController : MonoBehaviour
         landingVideoBackground.loopPointReached += OnHomeTransitionVideoEnd;
 
         uiManager.loadDashboardScene();
-
     }
 
     private void OnHomeTransitionVideoEnd(VideoPlayer vp)
@@ -103,4 +206,40 @@ public class LandingController : MonoBehaviour
     }
     #endregion
 
+    #region Video Error Methods
+
+    public void ActivatedHUDButton()
+    {
+        GameManager.Instance.OpenVideoFolder();
+    }
+    public void SetVideoToDefault()
+    {
+        StartCoroutine(GameManager.Instance.CreateDefaultIncidentVideos());
+    }
+    void SetErrorVideoText()
+    {
+        videoErrorText.text = "The following video errors were found:\n";
+        foreach (string error in GameManager.Instance.videoErrors)
+        {
+            videoErrorText.text += "- " + error + "\n";
+        }
+    }
+
+    public void CheckVideoIncident()
+    {
+        if (GameManager.Instance.isVideoHaveError)
+        {
+            SetErrorVideoText();
+            LeanTween.alphaCanvas(videoErrorPanel, 1, 0.5f).setOnComplete(() =>
+            {
+                videoErrorPanel.interactable = true;
+                videoErrorPanel.blocksRaycasts = true;
+            });
+        }
+        else
+        {
+            videoErrorText.text = "<color=white>No video errors found.";
+        }
+    }
+    #endregion
 }

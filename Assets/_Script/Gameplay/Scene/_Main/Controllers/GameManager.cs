@@ -274,6 +274,8 @@ public class GameManager : MonoBehaviourSingletonPersistent<GameManager>
         }
 
         isVideoHaveError = videoErrors.Count > 0;
+        if (isVideoHaveError)
+            StartCoroutine(CreateDefaultIncidentVideos());
     }
 
     public IEnumerator CreateDefaultIncidentVideos()
@@ -303,12 +305,16 @@ public class GameManager : MonoBehaviourSingletonPersistent<GameManager>
             {
                 string targetFile = Path.Combine(targetModule, Path.GetFileName(file));
 
-                // if (File.Exists(targetFile))
-                //     continue;
+                //if (File.Exists(targetFile))
+                //    continue;
 
                 yield return CopyFile(file, targetFile);
             }
         }
+
+        string readmeSource = Path.Combine(sourceRoot, "README.txt");
+
+        yield return CopyFile(readmeSource, Path.Combine(targetRoot, "README.txt"));
 
         isVideoHaveError = videoErrors.Count > 0;
     }

@@ -49,6 +49,9 @@ public class UIManager : MonoBehaviour
     public CanvasGroup virtualBGCG;
     public CanvasGroup popupBlackBGCG;
     public VideoPlayer popupVideoPlayer;
+    
+    [Header("alarm monitoring elements")]
+    public CanvasGroup alarmMonitoringCG;
 
 
     private bool isShowing = false;
@@ -61,6 +64,7 @@ public class UIManager : MonoBehaviour
 
     [Header("debug")]
     public bool skipLanding = false;
+    public bool stillInDevelopment = false;
 
     //var
     private DateTime today;
@@ -227,7 +231,6 @@ public class UIManager : MonoBehaviour
             //toggleBGM(false);
             SoundManager.Instance.PlaySFX("MenuOpen");
             SoundManager.Instance.SetVolume(0.02f, "theEpic", 1f);
-            dashboardPage.CheckVideoIncident();
         });
 
     }
