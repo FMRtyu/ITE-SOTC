@@ -286,6 +286,12 @@ public class GameManager : MonoBehaviourSingletonPersistent<GameManager>
         string sourceRoot = Path.Combine(Application.streamingAssetsPath, "videos");
         string targetRoot = Path.Combine(Application.persistentDataPath, "videos");
 
+        //add remove old videos
+        if (Directory.Exists(targetRoot))
+        {
+            Directory.Delete(targetRoot, true);
+        }
+
         Directory.CreateDirectory(targetRoot);
 
         foreach (string module in modules)
