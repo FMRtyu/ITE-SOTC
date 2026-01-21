@@ -1,3 +1,4 @@
+using System.IO;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,9 +16,13 @@ public class LandingController : MonoBehaviour
 
 
     [Header("Video Clips")]
-    [SerializeField] private VideoClip landingVideoClip;
-    [SerializeField] private VideoClip transitionVideoClip;
-    [SerializeField] private VideoClip homeTransitionVideoClip;
+    //[SerializeField] private VideoClip landingVideoClip;
+    //[SerializeField] private VideoClip transitionVideoClip;
+    //[SerializeField] private VideoClip homeTransitionVideoClip;
+
+    [SerializeField] private string landingVideoClip;
+    [SerializeField] private string transitionVideoClip;
+    [SerializeField] private string homeTransitionVideoClip;
 
     [Header("video errors panel")]
     [SerializeField] private CanvasGroup videoErrorPanel;
@@ -43,8 +48,10 @@ public class LandingController : MonoBehaviour
         //GameManager.Instance.CheckDefaultVideos();
 
         //play background video
-        landingVideoBackground.clip = landingVideoClip;
-        landingVideoBackground.Play();
+        // landingVideoBackground.clip = landingVideoClip;
+        // landingVideoBackground.Play();
+        landingVideoBackground.source = VideoSource.Url;
+        SetVideoLink(landingVideoClip, true);
 
         //play bgm
         SoundManager.Instance.PlaySFX("theEpic");
@@ -71,7 +78,8 @@ public class LandingController : MonoBehaviour
             PlayerPrefs.SetString("LAST_APP_VERSION", CURRENT_VERSION);
             PlayerPrefs.Save();
             Debug.Log("First install or version changed. Created default incident videos.");
-        }else
+        }
+        else
         {
             CheckVideoIncident();
         }
@@ -159,8 +167,9 @@ public class LandingController : MonoBehaviour
         // Play transition video
         LeanTween.scale(headerTexts, Vector3.zero, 0.5f).setOnComplete(() =>
         {
-            landingVideoBackground.clip = transitionVideoClip;
-            landingVideoBackground.Play();
+            // landingVideoBackground.clip = transitionVideoClip;
+            // landingVideoBackground.Play();
+            SetVideoLink(transitionVideoClip, false);
             landingVideoBackground.loopPointReached += OnTransitionVideoEnd;
         });
     }
@@ -169,9 +178,9 @@ public class LandingController : MonoBehaviour
     {
         // Unsubscribe so it doesn't trigger multiple times
         vp.loopPointReached -= OnTransitionVideoEnd;
-        landingVideoBackground.clip = homeTransitionVideoClip;
-
-        landingVideoBackground.Play();
+        // landingVideoBackground.clip = homeTransitionVideoClip;
+        // landingVideoBackground.Play();
+        SetVideoLink(homeTransitionVideoClip, false);
         landingVideoBackground.loopPointReached += OnHomeTransitionVideoEnd;
 
         uiManager.loadDashboardScene();
@@ -242,4 +251,27 @@ public class LandingController : MonoBehaviour
         }
     }
     #endregion
+
+    private void SetVideoLink(string videoName, bool isLooping)
+    {
+        string path = Path.Combine(
+                Application.streamingAssetsPath,
+                "Landing",
+                videoName + ".mp4"
+            );
+        string fileUrl = "file://" + path.Replace("\\", "/");
+
+        if (File.Exists(path))
+        {
+            landingVideoBackground.url = fileUrl;
+
+            landingVideoBackground.isLooping = isLooping;
+            landingVideoBackground.Prepare();
+            landingVideoBackground.prepareCompleted += (VideoPlayer source) => source.Play();
+        }
+        else
+        {
+            Debug.LogError("Video file not found: " + path + "\nformated url: " + fileUrl);
+        }
+    }
 }

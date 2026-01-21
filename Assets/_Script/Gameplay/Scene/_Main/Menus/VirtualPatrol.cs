@@ -13,6 +13,7 @@ public class VirtualPatrol : _MenuState
     [Header("Video elements")]
     [SerializeField] private VideoPlayer PopupVideoPlayer;
     [SerializeField] private VideoPlayer FullScreenVP;
+    [SerializeField] private VideoPlayer droneVP;
 
     [SerializeField] private TMP_Text scenarioTitleTXT;
     [SerializeField] private CanvasGroup blackBGOverlay;
@@ -21,8 +22,9 @@ public class VirtualPatrol : _MenuState
     [SerializeField] private float blackBGOverlayeDelay = 0.5f;
 
     [Header("video clips")]
-    [SerializeField] private VideoClip[] popupVideoClip;
-    [SerializeField] private Sprite[] popupPlaceholder;
+    //[SerializeField] private VideoClip[] CCTVFeedClips;
+    [SerializeField] private string[] CCTVFeedClips;
+    //[SerializeField] private Sprite[] popupPlaceholder;
     [SerializeField] private IntrusionVideo[] intrusionData;
 
     [Header("UI Element")]
@@ -161,6 +163,8 @@ public class VirtualPatrol : _MenuState
 
     void initIncidentVideo()
     {
+        SetVideoLinkstreamingAssetsPath(CCTVFeedClips[4], true, droneVP);
+        
         int tempIntrusionIndex = 1;
         foreach (IntrusionVideo data in intrusionData)
         {
@@ -438,9 +442,12 @@ public class VirtualPatrol : _MenuState
             .setEase(LeanTweenType.easeInOutSine)
             .setOnComplete(() =>
             {
-                PopupVideoPlayer.clip = popupVideoClip[index];
+                // PopupVideoPlayer.clip = CCTVFeedClips[index];
+                // currentIndex = index;
+                // PopupVideoPlayer.Play();
+                SetVideoLinkstreamingAssetsPath(CCTVFeedClips[index], true, PopupVideoPlayer);
                 currentIndex = index;
-                PopupVideoPlayer.Play();
+
                 //placeholder
                 //Image tempPlaceholder = PopupVideoPlayer.transform.Find("PlaceholderIMG").GetComponent<Image>();
                 //tempPlaceholder.sprite = popupPlaceholder[index];
@@ -482,7 +489,8 @@ public class VirtualPatrol : _MenuState
         {
             PopupVideoPlayer.source = VideoSource.VideoClip;
             intrusionInProgress = false;
-            PopupVideoPlayer.clip = popupVideoClip[index];
+            // PopupVideoPlayer.clip = CCTVFeedClips[index];
+            SetVideoLinkstreamingAssetsPath(CCTVFeedClips[index], true, PopupVideoPlayer);
             currentIndex = index;
             PopupVideoPlayer.isLooping = true;
             isPlayingPopup = true;
@@ -712,6 +720,29 @@ public class VirtualPatrol : _MenuState
     {
         vp.prepareCompleted -= OnPrepared;
         vp.Play();
+    }
+
+    private void SetVideoLinkstreamingAssetsPath(string videoName, bool isLooping, VideoPlayer vp)
+    {
+        string path = Path.Combine(
+                Application.streamingAssetsPath,
+                "CCTVFeed",
+                videoName + ".mp4"
+            );
+        string fileUrl = "file://" + path.Replace("\\", "/");
+
+        if (File.Exists(path))
+        {
+            vp.url = fileUrl;
+
+            vp.isLooping = isLooping;
+            vp.Prepare();
+            vp.prepareCompleted += (VideoPlayer source) => source.Play();
+        }
+        else
+        {
+            Debug.LogError("Video file not found: " + path + "\nformated url: " + fileUrl);
+        }
     }
 
 
