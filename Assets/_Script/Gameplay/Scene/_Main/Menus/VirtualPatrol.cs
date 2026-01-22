@@ -459,7 +459,7 @@ public class VirtualPatrol : _MenuState
     private void PlayPopupCamera(int index = -1, IntrusionVideo intrusionVideo = null)
     {
         ShowPinPoint(false);
-        Image tempPlaceholder = PopupVideoPlayer.transform.Find("PlaceholderIMG").GetComponent<Image>();
+        //Image tempPlaceholder = PopupVideoPlayer.transform.Find("PlaceholderIMG").GetComponent<Image>();
 
         if (intrusionVideo != null)
         {
