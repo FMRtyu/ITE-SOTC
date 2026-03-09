@@ -27,6 +27,8 @@
 # ignore video files
 /[Aa]ssets/_Texture/GUI/Video/
 /[Aa]ssets/StreamingAssets/Videos/
+/[Aa]ssets/StreamingAssets/CCTVFeed/
+/[Aa]ssets/StreamingAssets/Landing/
 
 # Visual Studio cache directory
 .vs/
