@@ -1,8 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
-using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,6 +18,7 @@ public class VirtualPatrol : _MenuState
 
     [SerializeField] private float blackBGOverlayeDuration = 0.5f;
     [SerializeField] private float blackBGOverlayeDelay = 0.5f;
+    private RenderTexture popupTextureDefault;
 
     [Header("video clips")]
     //[SerializeField] private VideoClip[] CCTVFeedClips;
@@ -164,7 +163,8 @@ public class VirtualPatrol : _MenuState
     void initIncidentVideo()
     {
         SetVideoLinkstreamingAssetsPath(CCTVFeedClips[4], true, droneVP);
-        
+        popupTextureDefault = PopupVideoPlayer.targetTexture;
+
         int tempIntrusionIndex = 1;
         foreach (IntrusionVideo data in intrusionData)
         {
@@ -445,7 +445,17 @@ public class VirtualPatrol : _MenuState
                 // PopupVideoPlayer.clip = CCTVFeedClips[index];
                 // currentIndex = index;
                 // PopupVideoPlayer.Play();
-                SetVideoLinkstreamingAssetsPath(CCTVFeedClips[index], true, PopupVideoPlayer);
+
+                if (index != 4)
+                {
+                    PopupVideoPlayer.GetComponent<RawImage>().texture = popupTextureDefault;
+                    SetVideoLinkstreamingAssetsPath(CCTVFeedClips[index], true, PopupVideoPlayer);
+                }
+                else
+                {
+                    PopupVideoPlayer.GetComponent<RawImage>().texture = droneVP.targetTexture;
+                    PopupVideoPlayer.Play();
+                }
                 currentIndex = index;
 
                 //placeholder
@@ -463,6 +473,7 @@ public class VirtualPatrol : _MenuState
 
         if (intrusionVideo != null)
         {
+            PopupVideoPlayer.GetComponent<RawImage>().texture = popupTextureDefault;
             PopupVideoPlayer.source = VideoSource.Url;
             string path = Path.Combine(
                 Application.persistentDataPath,
@@ -490,7 +501,16 @@ public class VirtualPatrol : _MenuState
             PopupVideoPlayer.source = VideoSource.VideoClip;
             intrusionInProgress = false;
             // PopupVideoPlayer.clip = CCTVFeedClips[index];
-            SetVideoLinkstreamingAssetsPath(CCTVFeedClips[index], true, PopupVideoPlayer);
+            if(index != 4)
+            {
+                PopupVideoPlayer.GetComponent<RawImage>().texture = popupTextureDefault;
+                SetVideoLinkstreamingAssetsPath(CCTVFeedClips[index], true, PopupVideoPlayer);
+            }
+            else
+            {
+                PopupVideoPlayer.GetComponent<RawImage>().texture = droneVP.targetTexture;
+                PopupVideoPlayer.Play();
+            }
             currentIndex = index;
             PopupVideoPlayer.isLooping = true;
             isPlayingPopup = true;
